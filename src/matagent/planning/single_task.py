@@ -16,16 +16,16 @@ import yaml
 from matsimpy import Crystal, Lattice
 from matsimpy.io import read, write
 
-from .physics_guard import optimization_parameter_issues, inspect_registered_structure, sha256
-from .structures.geometry import compare_structures
-from .structures.store import StructureStore, write_json
-from .potentials.store import PotentialStore
-from .potentials.validation import validation_current, request_for
+from ..physics.guard import optimization_parameter_issues, inspect_registered_structure, sha256
+from ..structures.geometry import compare_structures
+from ..structures.store import StructureStore, write_json
+from ..potentials.store import PotentialStore
+from ..potentials.validation import validation_current, request_for
 
 PLAN_ID = r"plan-\d{8}T\d{6}Z-[a-f0-9]{8}"
 DEFAULTS = {"fmax": 0.02, "steps": 200}
 SUPPORTED = ("mattersim", "mace", "sevennet", "dp", "opencsp")
-PROJECT = Path(__file__).resolve().parents[2]
+PROJECT = Path(__file__).resolve().parents[3]
 
 
 class PlanError(ValueError):
@@ -95,7 +95,7 @@ def check_backend(workflow, structure):
     env["PYTHONDONTWRITEBYTECODE"] = "1"
     env["PYTHONPATH"] = os.pathsep.join([str(PROJECT / "src"), str(PROJECT.parent / "matsimpy"),
                                       str(PROJECT.parent / "UniMatSim")])
-    proc = subprocess.run([sys.executable, "-B", "-m", "matagent.plan_backend",
+    proc = subprocess.run([sys.executable, "-B", "-m", "matagent.planning.plan_backend",
                            str(Path(workflow).resolve()), str(Path(structure).resolve())],
                           env=env, cwd=PROJECT, capture_output=True, text=True, timeout=60)
     try:

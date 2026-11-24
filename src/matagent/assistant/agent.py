@@ -10,14 +10,14 @@ from matsimpy.ai.skills import SkillLibrary
 from matsimpy.ai.tools import ToolCatalog
 
 from .conversation import Conversation, SESSION
-from ..run_tools import list_runs, read_run
+from ..execution.run_tools import list_runs, read_run
 from ..optimization_tools import OptimizationTools
-from ..physics_guard import physics_guard
+from ..physics.guard import physics_guard
 from ..structures.tools import StructureTools, TOOL_NAMES
 from ..potentials.tools import PotentialTools, TOOL_NAMES as POTENTIAL_TOOLS
 from ..potentials.store import PotentialStore
-from ..plan_tools import PLAN_TOOLS
-from ..workflow_tools import WORKFLOW_TOOLS
+from ..planning.plan_tools import PLAN_TOOLS
+from ..planning.workflow_tools import WORKFLOW_TOOLS
 
 
 INSTRUCTIONS = """你是 2D-MatAgent，用中文回答。你能使用的操作及输入输出见已注册工具说明。
@@ -159,7 +159,7 @@ class MaterialAgent(Agent):
         plan_query = getattr(self.conversation, "requires_plan_evidence", False)
         run_query = self.conversation.binding.get("run_id") and not self.optimization.allowed
         if run_query:
-            from ..run_tools import _read
+            from ..execution.run_tools import _read
             run_query = _read(self.workspace.path, self.conversation.binding["run_id"]).get("kind") == "workflow_execution"
         if run_query or plan_query or getattr(self.conversation, "requires_potential_evidence", False):
             explicit = self.potential_tools.explicit_ids(PotentialStore(self.workspace.path))

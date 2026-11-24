@@ -7,9 +7,9 @@ import subprocess
 from matsimpy.ai.tools import ToolContext
 from matsimpy.utils.tooling import tool
 
-from .plan_compiler import PlanStore, PlanRequest, DEFAULTS, error_result, require, PlanError
-from .potentials.store import PotentialStore
-from .physics_guard import optimization_parameter_issues
+from .single_task import PlanStore, PlanRequest, DEFAULTS, error_result, require, PlanError
+from ..potentials.store import PotentialStore
+from ..physics.guard import optimization_parameter_issues
 
 PLAN_TOOLS = ("update_optimization_plan", "inspect_plan", "validate_plan")
 
@@ -189,7 +189,7 @@ class PlanTools:
         Args:
             plan_id: 已保存的计划编号。
         """
-        from .workflow_plans import WorkflowStore
+        from .dag import WorkflowStore
         return WorkflowStore(context.workspace).inspect(plan_id)
 
     @tool
@@ -199,5 +199,5 @@ class PlanTools:
         Args:
             plan_id: 需要配置校验的计划编号。
         """
-        from .workflow_plans import WorkflowStore
+        from .dag import WorkflowStore
         return WorkflowStore(context.workspace).inspect(plan_id)

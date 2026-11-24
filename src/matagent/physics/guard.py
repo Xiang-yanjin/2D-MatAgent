@@ -11,9 +11,9 @@ from matsimpy.ai.tools import ToolContext
 from matsimpy.utils.tooling import tool
 from matsimpy.io import read
 
-from .run_tools import _read
+from ..execution.run_tools import _read
 
-PROJECT = Path(__file__).resolve().parents[2]
+PROJECT = Path(__file__).resolve().parents[3]
 DEFAULT_CONFIG = PROJECT / "examples/mos2/workflow.yaml"
 DEFAULT_STRUCTURE = PROJECT / "examples/mos2/runs/20261120T143706Z-09f1c9a4/initial.vasp"
 TOL = 1e-8
@@ -21,7 +21,7 @@ TOL = 1e-8
 
 def geometry_check(reference, candidate):
     """Shared comparison, wrapping only the reference's periodic axes."""
-    from .structures.geometry import compare_structures
+    from ..structures.geometry import compare_structures
     return compare_structures(reference, candidate)
 
 
@@ -62,7 +62,7 @@ def _finite(value):
 def _structure(path, issues, reference=None):
     try:
         crystal = read(str(path))
-        from .structures.geometry import validate_crystal
+        from ..structures.geometry import validate_crystal
         validate_crystal(crystal)
         cell = crystal.lattice.matrix
         if len(crystal) == 0 or not np.isfinite(cell).all() or not np.isfinite(crystal.frac_positions).all():
@@ -97,7 +97,7 @@ def optimization_parameter_issues(fmax, steps):
 
 def inspect_registered_structure(crystal, record):
     """Check registered 2D geometry without imposing the MoS2 sample identity."""
-    from .structures.geometry import layer_geometry
+    from ..structures.geometry import layer_geometry
     periodicity = record["periodicity"]
     geometry, _ = layer_geometry(crystal, periodicity.get("normal_axis"))
     return {"passed": True, "geometry": geometry, "periodicity": periodicity,
@@ -336,7 +336,7 @@ def physics_guard(context: ToolContext, structure_path: str = "", run_id: str = 
             "structure_path/run_id", {"structure_path": structure_path, "run_id": run_id},
             "需要选择一个结构或一个运行", "提供 structure_path，或单独提供 run_id。", "input")]}
     if run_id:
-        from .run_tools import _read, read_run
+        from ..execution.run_tools import _read, read_run
         if _read(context.workspace,run_id).get("kind")=="workflow_execution":
             return read_run(run_id,context)
         return inspect_run(run_id, context)

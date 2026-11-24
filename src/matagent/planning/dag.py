@@ -11,12 +11,12 @@ from uuid import uuid4
 import yaml
 from matsimpy.io import write
 from .capabilities import catalog, ALIASES, ROOT, evidence
-from .plan_compiler import PlanStore, require, canonical_hash, PROJECT, PlanError, error_result
-from .structures.store import StructureStore, write_json
-from .physics_guard import sha256
-from .potentials.store import PotentialStore
-from .potentials.validation import request_for, validation_current
-from .workflow_validation import parameters, json_finite
+from .single_task import PlanStore, require, canonical_hash, PROJECT, PlanError, error_result
+from ..structures.store import StructureStore, write_json
+from ..physics.guard import sha256
+from ..potentials.store import PotentialStore
+from ..potentials.validation import request_for, validation_current
+from .validation import parameters, json_finite
 
 NODE = r"[A-Za-z][A-Za-z0-9_]{0,63}"
 INPUT_PATHS = {"input","material","valid_material","directory","vasp_directory","config","model_path"}
@@ -60,7 +60,7 @@ def check_native(path):
     env=os.environ.copy()
     env["PYTHONDONTWRITEBYTECODE"]="1"
     env["PYTHONPATH"]=os.pathsep.join([str(PROJECT/"src"),str(PROJECT.parent/"matsimpy"),str(ROOT.parent)])
-    proc=subprocess.run([sys.executable,"-B","-m","matagent.workflow_backend",str(path)],
+    proc=subprocess.run([sys.executable,"-B","-m","matagent.planning.workflow_backend",str(path)],
                         cwd=PROJECT,env=env,capture_output=True,text=True,timeout=60)
     try: value=json.loads(proc.stdout)
     except ValueError:value={"passed":False,"error":proc.stderr[-1500:]}
@@ -229,7 +229,7 @@ class WorkflowStore(PlanStore):
                     manifest=StructureStore(self.workspace).directory(sid)/"manifest.json"
                     snapshots[str(manifest)]=fingerprint(manifest)
                     if record["periodicity"].get("effective_pbc")==[True,True,False]:
-                        from .physics_guard import inspect_registered_structure
+                        from ..physics.guard import inspect_registered_structure
                         check=inspect_registered_structure(crystal,record)
                         geometry.append({"input":target,"geometry":check["geometry"],
                             "source_pbc":record["periodicity"],"backend_structure_file_pbc":[True,True,True],
@@ -350,7 +350,7 @@ class WorkflowStore(PlanStore):
                     "纯 VASP 提取 CLI 不接受远程计算器。","使用 direct；数据仍可来自指定目录。")
             require(not any((n["model"] or {}).get("backend")=="opencsp" for n in nodes),
                     "execution.mode","remote","OpenCSP 后端不支持 UniMatSim 远程工作流服务。","使用 direct。")
-        return {"kind":"workflow_dag","schema_version":3,"intent":intent,"nodes":nodes,"stages":stages,
+        return {"kind":"workflow_dag","schema_version":4,"intent":intent,"nodes":nodes,"stages":stages,
                 "structure_snapshots":structures,"input_snapshots":snapshots,"backend_sources":backend_proof(),
                 "pending":pending,"parent_id":parent.get("plan_id") if parent else None,
                 "revision":parent["revision"]+1 if parent else 1,"execution_supported":False,
@@ -422,6 +422,9 @@ class WorkflowStore(PlanStore):
                                                if k!="training_config"}
                         adapter["parameters"].update(params)
                         adapter["argv"]=None
+                elif node["capability"] == "trajectory.select_frame" and plan["schema_version"] == 3:
+                    # Reproduce the callable recorded in immutable v3 workflow manifests.
+                    adapter["callable"] = "matagent.workflow_adapters:select_frame"
                 else:adapter["callable"]=cap["callable"]
                 adapter["expected_artifacts"]={"stdout":{"planned_path":str(node_dir/"stdout.log"),"exists":False}}
                 for key in ("output","output_json","output_dir"):
@@ -516,7 +519,7 @@ class WorkflowStore(PlanStore):
             for sid,snapshot in plan["structure_snapshots"].items():
                 crystal,_=StructureStore(self.workspace).load(sid)
                 from matsimpy.io import read
-                from .structures.geometry import compare_structures
+                from ..structures.geometry import compare_structures
                 compare_structures(crystal,read(str(self.directory(plan_id)/"inputs"/(sid+".vasp")),format="vasp"))
             for key,proof in plan["backend_sources"].items():
                 require(evidence(key)==proof,"backend_source",key,"后端源码变化，旧证据失效。","显式创建重新编译的新版本。")
@@ -563,7 +566,7 @@ class WorkflowStore(PlanStore):
         plan=self.load(plan_id)
         if plan.get("kind")!="workflow_dag":return super().inspect(plan_id)
         validation=self.validate(plan_id);folder=self.directory(plan_id)
-        from .execution import preflight_issues
+        from ..execution.runner import preflight_issues
         policy=plan["execution"]
         try:
             blockers=preflight_issues(self,plan) if validation["passed"] else validation["issues"]

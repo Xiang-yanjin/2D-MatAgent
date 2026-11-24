@@ -9,10 +9,10 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch, MagicMock
 import yaml
-from matagent.capabilities import catalog, NATIVE, ROOT, source, CLI, STUBS
-from matagent.workflow_plans import WorkflowStore, dependency_order
-from matagent.plan_compiler import PlanError
-from matagent.workflow_validation import parameters
+from matagent.planning.capabilities import catalog, NATIVE, ROOT, source, CLI, STUBS
+from matagent.planning.dag import WorkflowStore, dependency_order
+from matagent.planning.single_task import PlanError
+from matagent.planning.validation import parameters
 from matagent.optimization_tools import OptimizationTools
 from test_yaml_plans import structure_fixture, model_fixture
 
@@ -30,6 +30,20 @@ class WorkflowTests(unittest.TestCase):
         return [{"id":"opt","capability":"optimization","parameters":{"is_2d":True,"relax_cell":False,"steps":50,"fmax":.015}},
                 *[{"id":k,"capability":k,"inputs":{"structure":{"node":"opt","output":"optimized_structure","type":"structure"}}}
                   for k in ("phonon","elastic")]]
+    def test_frame_manifest_preserves_callable_for_saved_v3_plans(self):
+        trajectory = self.root / "frames.xyz"
+        trajectory.write_text("1\nframe\nSi 0 0 0\n")
+        inputs = {"trajectory": {"type": "trajectory", "path": str(trajectory)},
+                  "reference_structure": {"type": "structure", "structure_id": self.sid}}
+        plan = self.normalize([{"id": "frame", "capability": "trajectory.select_frame",
+                                "inputs": inputs}])
+        folder = self.root / "compiled"
+        for version, target in [(plan["schema_version"], "matagent.execution.adapters:select_frame"),
+                                (3, "matagent.workflow_adapters:select_frame")]:
+            with self.subTest(version=version):
+                manifest = self.store.compile({**plan, "schema_version": version}, folder)
+                self.assertEqual(manifest["workflow.yaml"]["adapters"][0]["callable"], target)
+
     def test_native_registry_coverage_and_all_types_parse(self):
         sys.path.insert(0,str(ROOT.parent))
         from unimatsim.workflows.tasks.registry import TaskRegistry
@@ -307,7 +321,7 @@ class UpstreamBindingTests(unittest.TestCase):
                 self.assertIsNone(builder.tasks["extract"]["structure"])
 
     def test_trajectory_frame_selection_preserves_explicit_cell_and_order(self):
-        from matagent.workflow_adapters import select_frame
+        from matagent.execution.adapters import select_frame
         from pymatgen.core import Structure,Lattice
         with tempfile.TemporaryDirectory() as tmp:
             p=Path(tmp)/"sample.xyz";p.write_text("1\nsynthetic first\nSi 0 0 0\n1\nsynthetic final\nSi 1 0 0\n")

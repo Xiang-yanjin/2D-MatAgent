@@ -1,6 +1,6 @@
 """Pure JSON schema and task-specific checks for planning."""
 import math
-from .plan_compiler import require
+from .single_task import require
 
 POSITIVE = {"fmax","steps","max_steps","timestep","delta","temperature","checkpoint_interval",
             "max_supercell_atoms","band_npoints","dos_npts","dos_width","qpoint_spacing",

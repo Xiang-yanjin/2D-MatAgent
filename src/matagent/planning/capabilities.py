@@ -5,7 +5,7 @@ import hashlib
 import importlib.metadata
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3] / "UniMatSim" / "unimatsim"
+ROOT = Path(__file__).resolve().parents[4] / "UniMatSim" / "unimatsim"
 NATIVE = {
     "optimization": ("optimization", "结构优化", ["energy", "forces"]),
     "single_point": ("single_point", "单点计算", ["energy", "forces", "stress"]),
@@ -282,10 +282,10 @@ def catalog():
         "id":"trajectory.select_frame","name":"轨迹选帧并显式恢复晶胞","implemented":True,"native":False,
         "yaml_supported":False,"planning_supported":True,
         "parameters":{"index":{"type":"integer","default":-1,"required":False,"unit":"zero-based frame",
-                              "source":{"path":str(Path(__file__).with_name("workflow_adapters.py")),"line":1}}},
+                              "source":{"path":str(Path(__file__).resolve().parents[1] / "execution" / "adapters.py"),"line":1}}},
         "inputs":{"trajectory":"trajectory","reference_structure":"structure"},
         "outputs":{"structure":"structure"},"model_properties":[],
-        "evidence":[],"compiler":"fixed_python_adapter","callable":"matagent.workflow_adapters:select_frame",
+        "evidence":[],"compiler":"fixed_python_adapter","callable":"matagent.execution.adapters:select_frame",
         "notes":["Agent 适配器，ASE 读指定帧后从显式参考结构恢复晶胞/PBC；检查元素与原子顺序，不进行能量或力计算。"]}
     for key,cap in result.items():
         deps={}

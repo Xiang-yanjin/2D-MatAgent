@@ -7,12 +7,12 @@ from types import SimpleNamespace
 import json
 import unittest
 
-from matagent.execution import execute, read_execution
-from matagent.execution_checks import check_result
-from matagent.execution_worker import blocked_reason
-from matagent.capabilities import catalog
-from matagent.run_tools import read_run
-from matagent.workflow_plans import WorkflowStore
+from matagent.execution.runner import execute, read_execution
+from matagent.execution.checks import check_result
+from matagent.execution.worker import blocked_reason
+from matagent.planning.capabilities import catalog
+from matagent.execution.run_tools import read_run
+from matagent.planning.dag import WorkflowStore
 from test_yaml_plans import structure_fixture
 
 
@@ -169,7 +169,7 @@ class ExecutionContracts(unittest.TestCase):
     def test_training_callback_requires_a_real_output_checkpoint(self):
         from contextlib import chdir, redirect_stdout
         from unittest.mock import patch
-        from matagent.execution_worker import call_adapter
+        from matagent.execution.worker import call_adapter
 
         cap = catalog()["model.fine_tune_model"]
         params = {
@@ -194,7 +194,7 @@ class ExecutionContracts(unittest.TestCase):
                 (self.root / "stdout.log").open("w") as out,
                 redirect_stdout(out),
                 patch(
-                    "matagent.execution_worker.import_module",
+                    "matagent.execution.worker.import_module",
                     return_value=SimpleNamespace(
                         __name__="synthetic.training", fine_tune_model=callback
                     ),
@@ -215,7 +215,7 @@ class ExecutionContracts(unittest.TestCase):
         from ase import Atoms
         from ase.io import write
         from pymatgen.core import Lattice, Structure
-        from matagent.workflow_adapters import select_frame
+        from matagent.execution.adapters import select_frame
 
         trajectory = self.root / "trajectory.xyz"
         write(trajectory, [Atoms("Si", positions=[[0, 0, z]]) for z in (1, 2)])

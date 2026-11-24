@@ -10,7 +10,7 @@ import unittest
 from uuid import uuid4
 
 import yaml
-from matagent.plan_compiler import PlanStore
+from matagent.planning.single_task import PlanStore
 from matagent.potentials.validation import validation_current
 from matagent.potentials.store import PotentialStore
 from test_live_potentials import protected_snapshot

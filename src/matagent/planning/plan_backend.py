@@ -9,7 +9,7 @@ import tempfile
 
 
 def check(workflow, structure):
-    project = Path(__file__).resolve().parents[2]
+    project = Path(__file__).resolve().parents[3]
     repos = [project.parent / name for name in ("matsimpy", "UniMatSim")]
     sys.path[:0] = [str(p) for p in repos if p.is_dir()]
     workflow, structure = Path(workflow).resolve(), Path(structure).resolve()

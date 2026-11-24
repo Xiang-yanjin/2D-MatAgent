@@ -13,7 +13,7 @@ from unittest.mock import patch
 import yaml
 from matagent.assistant.agent import build_agent
 from matagent.assistant.demo_provider import DemoProvider
-from matagent.physics_guard import DEFAULT_CONFIG, DEFAULT_STRUCTURE, inspect_inputs, mos2_reference
+from matagent.physics.guard import DEFAULT_CONFIG, DEFAULT_STRUCTURE, inspect_inputs, mos2_reference
 
 PROJECT = Path(__file__).resolve().parents[1]
 SAMPLE = PROJECT / "examples/mos2/runs/20261120T143706Z-09f1c9a4"

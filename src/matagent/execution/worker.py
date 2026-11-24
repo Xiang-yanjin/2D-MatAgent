@@ -12,10 +12,10 @@ import traceback
 
 import yaml
 from monty.json import MontyEncoder
-from .execution import load, now
-from .execution_checks import check_result
-from .structures.store import write_json
-from .workflow_plans import fingerprint
+from .runner import load, now
+from .checks import check_result
+from ..structures.store import write_json
+from ..planning.dag import fingerprint
 
 
 def adapter_description(cap):
@@ -65,7 +65,7 @@ def blocked_reason(node, cap):
         return "当前适配器不能把动态产物绑定到模型、输出或者控制参数。"
     if key == "data.import_xyz":
         return "此上游入口仅枚举文件并创建目录，未实现 XYZ 导入产物。"
-    from .workflow_plans import OUTPUT_PATHS
+    from ..planning.dag import OUTPUT_PATHS
 
     if set(node.get("inputs", {})) & OUTPUT_PATHS:
         return "输出路径不能由输入产物绑定；请使用节点内相对文件名。"
@@ -295,7 +295,7 @@ def call_adapter(adapter, cap, bound, directory):
             raise ValueError(str(result))
         return {"result": result}
     if key == "trajectory.select_frame":
-        from .workflow_adapters import select_frame
+        from .adapters import select_frame
 
         return select_frame(**params)
     raise ValueError("Missing adapter for " + key)
@@ -303,7 +303,7 @@ def call_adapter(adapter, cap, bound, directory):
 
 class Execution:
     def __init__(self, folder):
-        from .capabilities import catalog
+        from ..planning.capabilities import catalog
 
         self.folder = folder
         self.record = load(folder / "run.json")
@@ -574,7 +574,7 @@ class Execution:
         def invoke(_):
             requested = self.nodes[name].get("model") or {}
             if requested.get("source") == "local":
-                from .potentials.store import check_location
+                from ..potentials.store import check_location
 
                 problems = check_location(requested["location"])
                 if problems:

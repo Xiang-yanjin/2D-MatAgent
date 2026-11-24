@@ -58,7 +58,7 @@ def _read(workspace: Path, run_id: str) -> dict:
         return _error(run_id, "run.json 的顶层不是运行记录对象。", f"runs/{run_id}/run.json")
 
     if data.get("kind") == "workflow_execution":
-        from .execution import read_execution
+        from .runner import read_execution
         return read_execution(directory)
     missing = []
     def field(name: str):
@@ -182,6 +182,6 @@ def read_run(run_id: str, context: ToolContext, node_id: str = "") -> dict:
                 details[name]["requested_model"]={k:model.get(k) for k in ("backend","parameters","sha256","potential_id")} if model else None
         return {**result,"node_records":details}
     if "error" not in result:
-        from .physics_guard import inspect_run
+        from ..physics.guard import inspect_run
         result["physics_guard"] = inspect_run(run_id, context, summary=result)
     return result

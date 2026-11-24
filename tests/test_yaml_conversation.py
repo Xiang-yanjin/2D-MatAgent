@@ -12,7 +12,7 @@ from unittest.mock import patch
 from matsimpy.ai.provider import ChatMessage, ChatResponse, ToolCall
 from matagent.assistant.agent import build_agent
 from matagent.cli import main
-from matagent.plan_compiler import PlanStore
+from matagent.planning.single_task import PlanStore
 from matagent.potentials.store import PotentialStore
 from test_yaml_plans import model_fixture, structure_fixture
 

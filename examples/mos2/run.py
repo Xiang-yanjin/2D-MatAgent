@@ -17,7 +17,7 @@ PROJECT = Path(__file__).resolve().parents[2]
 REPOS = [PROJECT.parent / name for name in ("matsimpy", "UniMatSim")]
 REFERENCE = "tests/symmetry/test_kpath_2d.py::test_buckled_mos2_monolayer_is_hexagonal"
 sys.path[:0] = [str(path) for path in REPOS]
-from matagent.physics_guard import (
+from matagent.physics.guard import (
     TOL, geometry_check, sha256, mos2_reference, inspect_inputs, convergence_report,
 )
 

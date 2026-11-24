@@ -9,7 +9,7 @@ import yaml
 
 def check(path):
     path=Path(path).resolve()
-    project=Path(__file__).resolve().parents[2]
+    project=Path(__file__).resolve().parents[3]
     root=project.parent/"UniMatSim"
     sys.path.insert(0,str(root))
     import unimatsim

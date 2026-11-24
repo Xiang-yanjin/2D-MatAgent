@@ -4,9 +4,9 @@ from matsimpy.utils.tooling import tool
 from .capabilities import catalog, inspect_capability_data
 import re
 from .plan_tools import checked
-from .plan_compiler import require
-from .potentials.store import PotentialStore
-from .workflow_plans import WorkflowStore
+from .single_task import require
+from ..potentials.store import PotentialStore
+from .dag import WorkflowStore
 
 WORKFLOW_TOOLS=("list_capabilities","inspect_capability","preview_workflow","update_workflow")
 
@@ -15,7 +15,7 @@ class WorkflowTools:
     @checked
     def list_capabilities(self, context: ToolContext) -> dict:
         """列出真实已实现能力、占位能力和计划方式；只读，不加载模型或启动计算。"""
-        from .execution_worker import adapter_description
+        from ..execution.worker import adapter_description
         return {"capabilities":[{**{k:v[k] for k in ("id","name","native","implemented","planning_supported","compiler") if k in v},
                                  "execution_adapter":adapter_description(v)}
                                 for v in catalog().values()],
@@ -35,7 +35,7 @@ class WorkflowTools:
             for info in schema.values():
                 proof=info.get("source",{})
                 info["source"]={k:proof[k] for k in ("path","line") if k in proof}
-        from .execution_worker import adapter_description
+        from ..execution.worker import adapter_description
         value["execution_adapter"]=adapter_description(value)
         value["validation"].pop("execution_supported",None)
         return value

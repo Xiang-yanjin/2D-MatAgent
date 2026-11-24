@@ -9,7 +9,7 @@ from uuid import uuid4
 
 from matsimpy.io import read, write
 
-from ..physics_guard import sha256
+from ..physics.guard import sha256
 from .geometry import validate_crystal, layer_geometry, StructureIssue, require
 
 STRUCTURE_ID = r"str-\d{8}T\d{6}Z-[a-f0-9]{12}"

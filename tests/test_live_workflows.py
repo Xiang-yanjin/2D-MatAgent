@@ -13,7 +13,7 @@ from test_live_potentials import protected_snapshot
 from test_live_structures import turns
 from matagent.potentials.store import PotentialStore
 from matagent.potentials.validation import validation_current
-from matagent.workflow_plans import WorkflowStore
+from matagent.planning.dag import WorkflowStore
 PROJECT=Path(__file__).resolve().parents[1]
 
 @unittest.skipUnless(os.getenv("MATAGENT_LIVE_DAG")=="1","Opt in to real language model DAG acceptance")

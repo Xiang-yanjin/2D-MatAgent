@@ -15,9 +15,9 @@ import sys
 from uuid import uuid4
 
 import yaml
-from .plan_compiler import PROJECT
-from .workflow_plans import WorkflowStore
-from .structures.store import write_json
+from ..planning.single_task import PROJECT
+from ..planning.dag import WorkflowStore
+from ..structures.store import write_json
 
 
 def now():
@@ -81,9 +81,9 @@ def worker_environment(folder=None):
 
 
 def preflight_issues(store, plan):
-    from .execution_worker import blocked_reason
-    from .capabilities import catalog
-    from .potentials.store import PotentialStore
+    from .worker import blocked_reason
+    from ..planning.capabilities import catalog
+    from ..potentials.store import PotentialStore
 
     caps = catalog()
     issues = []
@@ -150,8 +150,8 @@ def preflight_issues(store, plan):
 
 
 def prepare(store, plan, folder):
-    from .capabilities import catalog
-    from .execution_worker import blocked_reason
+    from ..planning.capabilities import catalog
+    from .worker import blocked_reason
 
     validated = store.validate(plan["plan_id"])
     write_json(folder / "preflight.json", validated)
@@ -298,7 +298,7 @@ def execute(workspace, plan_id, *, request_id=None, rerun=False):
             n["id"]: {"status": "pending", "capability": n["capability"]} for n in nodes
         }
         record["failure_stage"] = "worker_start"
-        command = [sys.executable, "-B", "-m", "matagent.execution_worker", str(folder)]
+        command = [sys.executable, "-B", "-m", "matagent.execution.worker", str(folder)]
         record["command"] = command
         write_json(folder / "run.json", record)
         with (

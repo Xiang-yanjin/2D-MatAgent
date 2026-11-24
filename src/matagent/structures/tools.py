@@ -17,7 +17,7 @@ from matsimpy.io import read, write
 from matsimpy.transformation.structural import make_supercell
 from matsimpy.utils.tooling import tool
 
-from ..physics_guard import sha256
+from ..physics.guard import sha256
 from .geometry import (
     StructureIssue, require, positive, validate_crystal, rebuild,
     layer_geometry, change_vacuum, compare_structures,

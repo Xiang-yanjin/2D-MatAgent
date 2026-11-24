@@ -12,7 +12,7 @@ from unittest.mock import patch
 import yaml
 from matagent.assistant.agent import build_agent
 from matagent.assistant.demo_provider import DemoProvider
-from matagent.plan_compiler import PlanStore, PlanRequest, PlanError, compile_config, compile_yaml
+from matagent.planning.single_task import PlanStore, PlanRequest, PlanError, compile_config, compile_yaml
 from matagent.plan_cli import main as plan_main
 from matagent.potentials.store import PotentialStore
 from matagent.potentials.validation import validate
@@ -179,18 +179,18 @@ class YamlPlanTests(unittest.TestCase):
         self.assertFalse((self.workspace / "runs").exists())
 
     def test_missing_parser_or_altered_backend_is_not_config_validated(self):
-        with patch("matagent.plan_compiler.check_backend", side_effect=PlanError(
+        with patch("matagent.planning.single_task.check_backend", side_effect=PlanError(
                 "upstream_parser", None, "missing dependency", "prepare environment")):
             with self.assertRaises(PlanError):
                 self.plans.save(self.definition())
         self.assertEqual(list(self.plans.root.glob("plan-*")), [])
         plan = self.plans.save(self.definition())
-        from matagent.plan_compiler import check_backend
+        from matagent.planning.single_task import check_backend
         def changed(*args):
             result = check_backend(*args)
             result["backend"]["version"] = "different"
             return result
-        with patch("matagent.plan_compiler.check_backend", side_effect=changed):
+        with patch("matagent.planning.single_task.check_backend", side_effect=changed):
             result = self.plans.validate(plan["plan_id"])
         self.assertFalse(result["passed"])
         self.assertEqual(result["issues"][0]["field"], "backend")

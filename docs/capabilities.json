@@ -6077,7 +6077,7 @@
         "required": false,
         "unit": "zero-based frame",
         "source": {
-          "path": "/home/administrator/agent/2D-MatAgent/src/matagent/workflow_adapters.py",
+          "path": "/home/administrator/agent/2D-MatAgent/src/matagent/execution/adapters.py",
           "line": 1
         }
       }
@@ -6092,7 +6092,7 @@
     "model_properties": [],
     "evidence": [],
     "compiler": "fixed_python_adapter",
-    "callable": "matagent.workflow_adapters:select_frame",
+    "callable": "matagent.execution.adapters:select_frame",
     "notes": [
       "Agent 适配器，ASE 读指定帧后从显式参考结构恢复晶胞/PBC；检查元素与原子顺序，不进行能量或力计算。"
     ],
