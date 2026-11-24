@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import re
 
+from ..paths import mos2_directory
 from .catalog import identify, normalize_backend, WEIGHT_SUFFIXES, SKIP_DIRECTORIES
 from ..structures.store import write_json
 
@@ -115,7 +116,7 @@ class PotentialStore:
         data, found, warnings = self.read(), [], []
         prior_evidence = {}
         references = {self.workspace / "runs",
-                      Path(__file__).resolve().parents[3] / "examples/mos2/runs"}
+                      mos2_directory() / "runs"}
         for runs in references:
             for path in sorted(runs.glob("*/run.json")):
                 try:

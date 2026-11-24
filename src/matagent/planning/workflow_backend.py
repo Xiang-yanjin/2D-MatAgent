@@ -7,10 +7,12 @@ import sys
 import tempfile
 import yaml
 
+from ..paths import dependency_root
+
+
 def check(path):
     path=Path(path).resolve()
-    project=Path(__file__).resolve().parents[3]
-    root=project.parent/"UniMatSim"
+    root=dependency_root("unimatsim")
     sys.path.insert(0,str(root))
     import unimatsim
     if not Path(unimatsim.__file__).resolve().is_relative_to(root):

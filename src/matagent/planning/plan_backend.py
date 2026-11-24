@@ -8,9 +8,11 @@ import sys
 import tempfile
 
 
+from ..paths import dependency_root
+
+
 def check(workflow, structure):
-    project = Path(__file__).resolve().parents[3]
-    repos = [project.parent / name for name in ("matsimpy", "UniMatSim")]
+    repos = [dependency_root(name) for name in ("matsimpy", "unimatsim")]
     sys.path[:0] = [str(p) for p in repos if p.is_dir()]
     workflow, structure = Path(workflow).resolve(), Path(structure).resolve()
     if workflow.suffix != ".yaml":

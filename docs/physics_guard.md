@@ -74,4 +74,4 @@ MATAGENT_LIVE_TESTS=1 python -m unittest discover -s tests -p 'test_live_physics
 
 临时样例由测试程序创建，并通过 `data_origin.kind=synthetic` 标明来源。测试结束后临时目录自动清理。真实模型答复、工具调用和检查报告汇总保存在本机 `.matagent/acceptance/step5.json`。非法参数还经过预览与执行入口测试，确认后端调用次数为零。验收前后比较项目真实运行文件的 SHA-256。
 
-代码位于 [physics_guard.py](../src/matagent/physics_guard.py)，入口回归位于 [test_physics_guard.py](../tests/test_physics_guard.py)，真实模型验收位于 [test_live_physics.py](../tests/test_live_physics.py)。
+代码位于 [physics/guard.py](../src/matagent/physics/guard.py)，入口回归位于 [test_physics_guard.py](../tests/test_physics_guard.py)，真实模型验收位于 [test_live_physics.py](../tests/test_live_physics.py)。

@@ -9,7 +9,8 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch, MagicMock
 import yaml
-from matagent.planning.capabilities import catalog, NATIVE, ROOT, source, CLI, STUBS
+from matagent.planning.capabilities import catalog, NATIVE, source, CLI, STUBS
+from matagent.paths import dependency_root
 from matagent.planning.dag import WorkflowStore, dependency_order
 from matagent.planning.single_task import PlanError
 from matagent.planning.validation import parameters
@@ -45,7 +46,7 @@ class WorkflowTests(unittest.TestCase):
                 self.assertEqual(manifest["workflow.yaml"]["adapters"][0]["callable"], target)
 
     def test_native_registry_coverage_and_all_types_parse(self):
-        sys.path.insert(0,str(ROOT.parent))
+        sys.path.insert(0,str(dependency_root("unimatsim")))
         from unimatsim.workflows.tasks.registry import TaskRegistry
         from unimatsim.core.enums import TaskType
         import unimatsim.workflows.tasks
@@ -225,7 +226,7 @@ class WorkflowTests(unittest.TestCase):
 class UpstreamBindingTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        sys.path.insert(0,str(ROOT.parent))
+        sys.path.insert(0,str(dependency_root("unimatsim")))
     def test_actual_manager_consumes_optimized_copy_and_blocks_before_loading(self):
         from unimatsim.workflows.manager import WorkflowManager, WorkflowExecutionError
         from unimatsim.workflows.builder import WorkflowBuilder

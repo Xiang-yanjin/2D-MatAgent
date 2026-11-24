@@ -15,7 +15,7 @@ import sys
 from uuid import uuid4
 
 import yaml
-from ..planning.single_task import PROJECT
+from ..paths import worker_pythonpath, dependency_root
 from ..planning.dag import WorkflowStore
 from ..structures.store import write_json
 
@@ -57,14 +57,7 @@ def worker_environment(folder=None):
     )
     env = {key: os.environ[key] for key in allowed if key in os.environ}
     env.update(
-        PYTHONPATH=os.pathsep.join(
-            str(p)
-            for p in (
-                PROJECT / "src",
-                PROJECT.parent / "UniMatSim",
-                PROJECT.parent / "matsimpy",
-            )
-        ),
+        PYTHONPATH=worker_pythonpath(),
         HF_HUB_OFFLINE="1",
         TRANSFORMERS_OFFLINE="1",
         WANDB_MODE="offline",
@@ -239,7 +232,7 @@ def prepare(store, plan, folder):
             "stages": stages,
             "kind": plan["kind"],
             "failure_policy": "continue_independent",
-            "backend": str(PROJECT.parent / "UniMatSim"),
+            "backend": str(dependency_root("unimatsim")),
         },
     )
     return nodes

@@ -33,7 +33,7 @@ matagent --resume <会话编号> "刚才替换的是哪个位点？替换前后�
 
 ## 参考原型与来源
 
-源码来源均为本地 MatSimPy 仓库，对应提交 `d4bd33ba608b3dbf9253340b62a7ee45719c793e`。常量保存在 [structure_tools.py](../src/matagent/structure_tools.py)，创建记录保留来源路径和提交。以下为参考几何，未声称是本次优化的产物。
+源码来源均为本地 MatSimPy 仓库，对应提交 `d4bd33ba608b3dbf9253340b62a7ee45719c793e`。常量保存在 [structures/tools.py](../src/matagent/structures/tools.py)，创建记录保留来源路径和提交。以下为参考几何，未声称是本次优化的产物。
 
 | 原型标识 | 默认 a / c（Å） | 位点与来源 |
 |---|---|---|
@@ -90,7 +90,7 @@ PBC 按四个字段分别表达：
 | `set_structure_vacuum` | `structure_id`、`vacuum_gap_A` → 新结构编号 |
 | `export_structure` | `structure_id`、`format`、可选 `output_file` → 路径、哈希、回读检查 |
 
-[structure_geometry.py](../src/matagent/structure_geometry.py) 提供共享几何核对；[structure_store.py](../src/matagent/structure_store.py) 保存结构和谱系；[structure_tools.py](../src/matagent/structure_tools.py) 提供工具；[conversation.py](../src/matagent/conversation.py) 保存结构、计划、运行各自的候选引用；[agent.py](../src/matagent/agent.py) 注册工具并限制跨对象调用。旧会话缺失新增字段时使用缺省值，保留原运行查询能力。
+[structures/geometry.py](../src/matagent/structures/geometry.py) 提供共享几何核对；[structures/store.py](../src/matagent/structures/store.py) 保存结构和谱系；[structures/tools.py](../src/matagent/structures/tools.py) 提供工具；[assistant/conversation.py](../src/matagent/assistant/conversation.py) 保存结构、计划、运行各自的候选引用；[assistant/agent.py](../src/matagent/assistant/agent.py) 注册工具并限制跨对象调用。旧会话缺失新增字段时使用缺省值，保留原运行查询能力。
 
 ## 产物与追溯
 

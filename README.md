@@ -57,7 +57,29 @@ python -m matagent --workspace "$HOME/matagent-work/mos2" --resume last
 
 `--new` 开启新会话，`--resume last` 恢复指定工作区最近保存的会话。要选择更早的一次，先用 `--list-sessions` 查看列表，再用 `--resume` 指定会话编号。普通执行请求会复用同一版本已登记的运行；要另算一次，请明确说“重新执行这份计划”。查询结果与恢复会话均可复用已有记录。
 
+## 源码导航
+
+| 子包 | 开发时从这里找 |
+|---|---|
+| [assistant](src/matagent/assistant/) | 中文对话、模型配置、工具注册、会话恢复 |
+| [structures](src/matagent/structures/) | 建模、几何编辑、结构登记与来源 |
+| [potentials](src/matagent/potentials/) | 本地权重发现、选择、加载验证 |
+| [planning](src/matagent/planning/) | 单任务 YAML、DAG、能力目录与配置校验 |
+| [execution](src/matagent/execution/) | 已授权工作流的执行、节点状态和运行证据查询 |
+| [physics](src/matagent/physics/) | 二维约束、几何和收敛证据检查 |
+
 ## 第一次配置环境
+
+**从 wheel 安装。** 在具备 MatSimPy 及其 AI 依赖的环境中安装分发文件。规划和执行还需在同一解释器中安装配套 UniMatSim（已验收提交 `6afd5fc`）和任务依赖。在 wheel 所在目录安装后，就可以在自己的工作区开始离线查询。
+
+```bash
+python -m pip install ./2d_matagent-1.4.0-py3-none-any.whl
+matagent --demo --workspace "$HOME/matagent-work/mos2" "列出已有运行"
+```
+
+wheel 携带固定 MoS₂ 示例的 YAML、参考结构和脚本；本地权重由用户提供。新工作区首次查询会显示空的运行列表。构建命令与子进程验收见[开发说明](docs/development.md)。
+
+**从源码开发。**
 
 需要 Python 3.10 或以上版本，从相邻源码目录安装 MatSimPy。执行通用工作流还需要配套的 UniMatSim 实现及相应任务依赖，目录布局如下：
 

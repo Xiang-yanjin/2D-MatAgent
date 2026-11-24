@@ -10,8 +10,9 @@ import sys
 from uuid import uuid4
 import yaml
 from matsimpy.io import write
-from .capabilities import catalog, ALIASES, ROOT, evidence
-from .single_task import PlanStore, require, canonical_hash, PROJECT, PlanError, error_result
+from ..paths import dependency_root, worker_pythonpath
+from .capabilities import catalog, ALIASES, evidence
+from .single_task import PlanStore, require, canonical_hash, PlanError, error_result
 from ..structures.store import StructureStore, write_json
 from ..physics.guard import sha256
 from ..potentials.store import PotentialStore
@@ -59,9 +60,9 @@ def backend_proof():
 def check_native(path):
     env=os.environ.copy()
     env["PYTHONDONTWRITEBYTECODE"]="1"
-    env["PYTHONPATH"]=os.pathsep.join([str(PROJECT/"src"),str(PROJECT.parent/"matsimpy"),str(ROOT.parent)])
+    env["PYTHONPATH"]=worker_pythonpath()
     proc=subprocess.run([sys.executable,"-B","-m","matagent.planning.workflow_backend",str(path)],
-                        cwd=PROJECT,env=env,capture_output=True,text=True,timeout=60)
+                        cwd=Path(path).resolve().parent,env=env,capture_output=True,text=True,timeout=60)
     try: value=json.loads(proc.stdout)
     except ValueError:value={"passed":False,"error":proc.stderr[-1500:]}
     return value
@@ -483,7 +484,7 @@ class WorkflowStore(PlanStore):
                 if k in plan["execution"]:argv+=["--"+k,str(plan["execution"][k])]
         plan["launch_spec"]={"kind":"unimatsim_cli" if native_only else "agent_adapter_plan",
                              "argv":argv if native_only else None,"working_directory":str(folder),
-                             "environment":{"PYTHONPATH":str(ROOT.parent)},
+                             "environment":{"PYTHONPATH":str(dependency_root("unimatsim"))},
                              "credential_source":"environment_at_execution_only",
                              "execution_supported":False}
         for name,data in configs.items():

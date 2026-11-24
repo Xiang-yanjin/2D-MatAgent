@@ -8,15 +8,19 @@ import subprocess
 import sys
 from uuid import uuid4
 
+from ..paths import dependency_root, worker_pythonpath
 from .catalog import BACKENDS, normalize_backend, versions
 from .store import check_location, digest, now, require
 from ..structures.store import write_json
 
 
 def environment_signature():
-    source = Path(__file__).resolve().parents[4] / "UniMatSim/unimatsim/engine/calculations.py"
+    try:
+        source = dependency_root("unimatsim") / "unimatsim/engine/calculations.py"
+    except ValueError:
+        source = None
     return {"python": sys.executable, "python_version": sys.version.split()[0],
-            "packages": versions(), "unimatsim_source_sha256": digest(source) if source.is_file() else None,
+            "packages": versions(), "unimatsim_source_sha256": digest(source) if source and source.is_file() else None,
             "validator_sha256": digest(Path(__file__).with_name("worker.py")),
             "loader_environment": {key: os.environ.get(key) for key in
                                    ("DP_BACKEND", "TORCH_FORCE_WEIGHTS_ONLY_LOAD",
@@ -97,8 +101,7 @@ def validate(store, record, backend=None, variant=None, timeout=120):
     env = os.environ.copy()
     env.update(request["runtime_environment"], PYTHONDONTWRITEBYTECODE="1",
                HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1")
-    source_dir = str(Path(__file__).resolve().parents[2])
-    env["PYTHONPATH"] = source_dir + (os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else "")
+    env["PYTHONPATH"] = worker_pythonpath()
     result = {}
     try:
         with log_path.open("w", encoding="utf-8") as output:

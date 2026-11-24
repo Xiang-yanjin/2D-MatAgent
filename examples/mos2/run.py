@@ -13,8 +13,9 @@ import traceback
 from uuid import uuid4
 
 
-PROJECT = Path(__file__).resolve().parents[2]
-REPOS = [PROJECT.parent / name for name in ("matsimpy", "UniMatSim")]
+from matagent.paths import CHECKOUT, dependency_root
+
+REPOS = [dependency_root(name) for name in ("matsimpy", "unimatsim")]
 REFERENCE = "tests/symmetry/test_kpath_2d.py::test_buckled_mos2_monolayer_is_hexagonal"
 sys.path[:0] = [str(path) for path in REPOS]
 from matagent.physics.guard import (
@@ -37,8 +38,10 @@ def prepare(record, run):
     for repo, module in zip(REPOS, (matsimpy, unimatsim)):
         if not Path(module.__file__).resolve().is_relative_to(repo):
             raise RuntimeError(f"Expected {module.__name__} from {repo}, got {module.__file__}")
-        record["source_commits"][repo.name] = subprocess.check_output(
-            ["git", "-C", str(repo), "rev-parse", "HEAD"], text=True).strip()
+        record["source_commits"]["UniMatSim" if module.__name__ == "unimatsim" else "matsimpy"] = (
+            subprocess.check_output(["git", "-C", str(repo), "rev-parse", "HEAD"], text=True).strip()
+            if (repo / ".git").exists() else None
+        )
 
     config = yaml.safe_load((run / "workflow.yaml").read_text(encoding="utf-8"))
     reference = mos2_reference()
@@ -118,7 +121,7 @@ def save_record(record, run):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--config", type=Path, default=Path(__file__).with_name("workflow.yaml"))
-    parser.add_argument("--runs-dir", type=Path, default=PROJECT / "runs")
+    parser.add_argument("--runs-dir", type=Path, default=(CHECKOUT or Path.cwd()) / "runs")
     parser.add_argument("--run-id", help="Fixed identifier supplied by the Agent")
     parser.add_argument("--config-sha256", help="Expected hash of the previewed YAML")
     parser.add_argument("--json", action="store_true", help="Print the resulting run identifier as JSON")

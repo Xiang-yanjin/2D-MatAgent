@@ -70,7 +70,7 @@
 
 ## 源码依据
 
-原生图由 UniMatSim 的 workflow.run_workflow 解析并进入 WorkflowManager。stage_driver 仅在本次工作流进程中替换串行阶段循环，各节点继续由 _execute_single_task 和 resolve_bindings 处理。混合图按已保存的拓扑调用原生节点、固定 Typer 命令或公开 Python 方法。代码入口为 src/matagent/execution.py、execution_worker.py 和 execution_checks.py。
+原生图由 UniMatSim 的 workflow.run_workflow 解析并进入 WorkflowManager。stage_driver 仅在本次工作流进程中替换串行阶段循环，各节点继续由 _execute_single_task 和 resolve_bindings 处理。混合图按已保存的拓扑调用原生节点、固定 Typer 命令或公开 Python 方法。代码入口为 `src/matagent/execution/` 下的 `runner.py`、`worker.py` 和 `checks.py`。
 
 ## 回归与失败传播
 

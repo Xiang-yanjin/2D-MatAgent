@@ -92,10 +92,10 @@ de8d3f7a5c6aa89178350a58d98e15699e65e0192d366e943aa6544ba1b5beda
 
 ## 实现与测试入口
 
-- [conversation.py](../src/matagent/conversation.py)：引用解析、候选消歧、已完成工具结果保存、旧会话重建。
-- [agent.py](../src/matagent/agent.py)：复用 MatSimPy 原生消息与会话恢复；给模型提供本轮引用，约束明确指向的工具参数。
+- [assistant/conversation.py](../src/matagent/assistant/conversation.py)：引用解析、候选消歧、已完成工具结果保存、旧会话重建。
+- [assistant/agent.py](../src/matagent/assistant/agent.py)：复用 MatSimPy 原生消息与会话恢复；给模型提供本轮引用，约束明确指向的工具参数。
 - [cli.py](../src/matagent/cli.py)：单句与交互式入口、新建、列出及恢复。
-- [run_tools.py](../src/matagent/run_tools.py)：权重和产物原始字段来源。
+- [execution/run_tools.py](../src/matagent/execution/run_tools.py)：权重和产物原始字段来源。
 - [test_conversation.py](../tests/test_conversation.py)：隔离的多轮与恢复回归。
 - [test_live_conversation.py](../tests/test_live_conversation.py)：可显式启用的一次真实优化验收。
 

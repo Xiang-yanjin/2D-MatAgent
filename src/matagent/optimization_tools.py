@@ -18,8 +18,8 @@ from .execution.run_tools import read_run
 from .planning.plan_tools import PlanTools
 from .physics.guard import inspect_inputs, mos2_reference, DEFAULT_STRUCTURE
 
-PROJECT = Path(__file__).resolve().parents[2]
-RUNNER = PROJECT / "examples/mos2/run.py"
+from .paths import mos2_directory
+RUNNER = mos2_directory() / "run.py"
 DEFAULT_CONFIG = RUNNER.with_name("workflow.yaml")
 PLAN_ID = r"plan-\d{8}T\d{6}Z-[a-f0-9]{8}"
 
@@ -183,7 +183,7 @@ class OptimizationTools(PlanTools, WorkflowTools):
         if fixed != defaults or plan["parameters"] != {key: parameters[key] for key in ("fmax", "steps")}:
             return {"error": "计划只允许修改 fmax 和 steps，固定配置校验失败。"}
         if not RUNNER.is_file():
-            return {"error": "缺少 examples/mos2/run.py，请使用完整源码工作区。"}
+            return {"error": "找不到随包提供的 MoS₂ 示例脚本，请检查安装。"}
         self.used_plan = plan_id
         try:
             claim.mkdir()

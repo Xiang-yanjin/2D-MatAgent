@@ -13,9 +13,9 @@ from matsimpy.io import read
 
 from ..execution.run_tools import _read
 
-PROJECT = Path(__file__).resolve().parents[3]
-DEFAULT_CONFIG = PROJECT / "examples/mos2/workflow.yaml"
-DEFAULT_STRUCTURE = PROJECT / "examples/mos2/runs/20261120T143706Z-09f1c9a4/initial.vasp"
+from ..paths import mos2_directory
+DEFAULT_CONFIG = mos2_directory() / "workflow.yaml"
+DEFAULT_STRUCTURE = mos2_directory() / "runs/20261120T143706Z-09f1c9a4/initial.vasp"
 TOL = 1e-8
 
 

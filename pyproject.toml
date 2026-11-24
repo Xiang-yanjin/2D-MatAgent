@@ -15,3 +15,7 @@ matagent = "matagent.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.data-files]
+"share/2d-matagent/mos2" = ["examples/mos2/run.py", "examples/mos2/workflow.yaml"]
+"share/2d-matagent/mos2/runs/20261120T143706Z-09f1c9a4" = ["examples/mos2/runs/20261120T143706Z-09f1c9a4/initial.vasp"]

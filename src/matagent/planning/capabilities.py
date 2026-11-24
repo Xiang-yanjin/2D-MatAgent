@@ -5,7 +5,7 @@ import hashlib
 import importlib.metadata
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[4] / "UniMatSim" / "unimatsim"
+from ..paths import dependency_root
 NATIVE = {
     "optimization": ("optimization", "结构优化", ["energy", "forces"]),
     "single_point": ("single_point", "单点计算", ["energy", "forces", "stress"]),
@@ -92,12 +92,12 @@ OUTPUTS = {
 }
 
 def source(name):
-    path = ROOT / name
+    path = dependency_root("unimatsim") / "unimatsim" / name
     text = path.read_text(encoding="utf-8-sig")
     return text, ast.parse(text)
 
 def evidence(name, node=None):
-    path = ROOT / name
+    path = dependency_root("unimatsim") / "unimatsim" / name
     return {"path": str(path), "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
             "line": getattr(node, "lineno", 1)}
 
