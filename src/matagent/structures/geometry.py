@@ -95,7 +95,7 @@ def change_vacuum(crystal, gap, normal_axis):
     return rebuild(crystal, cell=cell, cart=cart)
 
 
-def compare_structures(reference, candidate):
+def compare_structures(reference, candidate, *, cif=False):
     validate_crystal(reference)
     validate_crystal(candidate)
     if list(reference.species) != list(candidate.species):
@@ -104,9 +104,15 @@ def compare_structures(reference, candidate):
     delta = np.asarray(candidate.frac_positions) - np.asarray(reference.frac_positions)
     periodic = np.asarray(reference.pbc, dtype=bool)
     delta[:, periodic] -= np.rint(delta[:, periodic])
-    cell_error = float(np.max(np.abs(cell - candidate.lattice.matrix)))
+    other = np.asarray(candidate.lattice.matrix)
+    if cif:
+        # CIF stores lengths and angles, so the reader can choose a rotated Cartesian frame.
+        cell = np.linalg.cholesky(cell @ cell.T)
+        other = np.linalg.cholesky(other @ other.T)
+    cell_error = float(np.max(np.abs(cell - other)))
     position_error = float(np.max(np.linalg.norm(delta @ cell, axis=1)))
-    if cell_error > TOL or position_error > TOL:
+    tolerance = 1e-5 if cif else TOL
+    if cell_error > tolerance or position_error > tolerance:
         raise ValueError(f"Structure transfer failed: {cell_error=}, {position_error=}")
     return {"sites": len(reference), "species": list(reference.species),
             "max_cell_component_error_A": cell_error, "max_site_error_A": position_error}

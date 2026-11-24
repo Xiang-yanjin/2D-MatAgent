@@ -324,19 +324,19 @@ class StructureTools:
     @checked
     def export_structure(self, context: ToolContext, structure_id: str, format: str = "vasp",
                          output_file: str = "") -> dict:
-        """导出 POSCAR 或 MatSimPy JSON，回读校验并返回文件与来源；不启动计算、不覆盖现有其他文件。
+        """导出 POSCAR、CIF 或 MatSimPy JSON，回读校验并返回文件与来源；不启动计算、不覆盖现有其他文件。
 
         Args:
             structure_id: 结构编号。
-            format: vasp 或 json；poscar 也表示 VASP POSCAR。
+            format: vasp、cif 或 json；poscar 也表示 VASP POSCAR。
             output_file: 工作目录内目标文件；省略存入该结构的 exports 目录。
         """
         store = StructureStore(context.workspace)
         crystal, record = store.load(structure_id)
         fmt = {"poscar": "vasp"}.get(format.lower(), format.lower())
-        require(fmt in ("vasp", "json"), "format", format, "当前导出仅支持 POSCAR 和 JSON。", "使用 vasp 或 json。")
+        require(fmt in ("vasp", "cif", "json"), "format", format, "支持 POSCAR、CIF 和 JSON。", "使用 vasp、cif 或 json。")
         directory = store.directory(structure_id)
-        target = store.confined(output_file or directory / "exports" / ("POSCAR" if fmt == "vasp" else "structure.json"))
+        target = store.confined(output_file or directory / "exports" / {"vasp": "POSCAR", "cif": "structure.cif", "json": "structure.json"}[fmt])
         manifest = directory / "exports.json"
         import json
         exports = json.loads(manifest.read_text()) if manifest.exists() else []
@@ -350,11 +350,11 @@ class StructureTools:
             target.parent.mkdir(parents=True, exist_ok=True)
             write(crystal, str(target), format=fmt)
         loaded = read(str(target), format=fmt)
-        check = compare_structures(crystal, loaded)
+        check = compare_structures(crystal, loaded, cif=(fmt == "cif"))
         entry = {"path": relative, "format": fmt, "sha256": sha256(target), "geometry_check": check,
                  "reader_pbc": list(loaded.pbc), "source_pbc": record["periodicity"]["source_pbc"],
                  "effective_pbc": list(crystal.pbc),
-                 "pbc_note": "POSCAR 不保存二维 PBC；实际二维声明在结构 manifest.json 中。" if fmt == "vasp" else "JSON 保留有效 PBC。"}
+                 "pbc_note": "实际二维 PBC 记录在 manifest.json 中。" if fmt != "json" else "JSON 保留有效 PBC。"}
         if not existing:
             exports.append(entry)
             write_json(manifest, exports)

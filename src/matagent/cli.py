@@ -2,11 +2,23 @@
 
 import argparse
 import json
-import sys
+import logging
 from pathlib import Path
 
 from .assistant.agent import build_agent
 from .assistant.config import configured_provider
+
+
+logger = logging.getLogger("matagent")
+
+
+def _configure_logging():
+    if not logger.handlers:
+        handler = logging.StreamHandler()
+        handler.setFormatter(logging.Formatter("%(levelname)s %(name)s %(message)s"))
+        logger.addHandler(handler)
+        logger.setLevel(logging.WARNING)
+        logger.propagate = False
 
 
 def _session_path(agent):
@@ -25,20 +37,21 @@ def _run_question(agent, question):
     result = agent.run(question)
     _session_path(agent)
     if result.status == "error":
-        print("模型调用失败。已完成的工具结果和引用已保存；可恢复本会话后查询。"
-              "请核对服务地址、模型名称、凭据及网络。", file=sys.stderr)
+        logger.error("event=model_call_failed session=%s 模型调用失败。可恢复会话后查询已保存的工具结果。"
+                     "请核对服务地址、模型名称、凭据及网络。", agent.session.id)
         return 1
     if result.status == "max_steps":
-        print(f"模型达到 {agent.max_steps} 轮调用上限，未形成最终回答。", file=sys.stderr)
+        logger.warning("event=max_steps session=%s 模型达到 %d 轮调用上限。", agent.session.id, agent.max_steps)
         return 1
     print(result.response, flush=True)
     if result.status == "truncated":
-        print("模型回复达到输出长度上限。", file=sys.stderr)
+        logger.warning("event=truncated session=%s 模型回复达到输出长度上限。", agent.session.id)
         return 1
     return 0
 
 
 def main() -> int:
+    _configure_logging()
     parser = argparse.ArgumentParser(description="用中文建模二维结构、选择本地势模型、生成单任务 YAML，支持运行查询和多轮会话")
     parser.add_argument("question", nargs="?", help="单次中文问题；省略时进入交互式会话")
     parser.add_argument("--demo", action="store_true", help="使用离线查询测试模型")
@@ -77,7 +90,8 @@ def main() -> int:
             try:
                 agent.resume(args.resume)
             except (OSError, ValueError, KeyError, TypeError):
-                parser.exit(2, "无法恢复该会话：请检查编号、文件完整性与 --workspace；可用 --list-sessions 查看。\n")
+                logger.warning("event=session_restore_failed 无法恢复该会话，请检查工作区或使用 --list-sessions。")
+                parser.exit(2)
         print(f"[模型] {label}")
         _session_path(agent)
         if args.question is not None:
@@ -107,7 +121,8 @@ def main() -> int:
                     agent.resume(question.split(maxsplit=1)[1])
                     _session_path(agent)
                 except (OSError, ValueError, KeyError, TypeError):
-                    print("无法恢复该会话，请用 /sessions 查看编号并核对工作目录。")
+                    logger.warning("event=session_restore_failed session=%s 无法恢复该会话，请用 /sessions 查看。",
+                                   agent.session.id)
             elif question.startswith("/"):
                 print("可用命令：/exit、/new、/sessions、/resume <编号>。")
             else:

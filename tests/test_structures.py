@@ -77,10 +77,10 @@ class StructureTests(unittest.TestCase):
         crystal, _ = self.store.load(vacuum["structure_id"])
         self.assertAlmostEqual(min(crystal.cart_positions[:, 2]), 10)
         self.assertAlmostEqual(crystal.lattice.matrix[2, 2] - max(crystal.cart_positions[:, 2]), 10)
-        for fmt in ("vasp", "json"):
+        for fmt in ("vasp", "cif", "json"):
             result = self.success("export_structure", structure_id=vacuum["structure_id"], format=fmt)
             exported = read(str(self.workspace / result["export"]["path"]), format=fmt)
-            compare_structures(crystal, exported)
+            compare_structures(crystal, exported, cif=(fmt == "cif"))
             self.assertEqual(list(crystal.species), list(exported.species))
         self.assertEqual(before, (self.workspace / original["structure_file"]).read_bytes())
         self.assertEqual([v["operation"]["name"] for v in vacuum["lineage"]],
@@ -151,7 +151,7 @@ class StructureTests(unittest.TestCase):
                  ("substitute_structure_sites", {"structure_id": sid, "new_element": "W", "site_numbers": [1, 1]}),
                  ("set_structure_vacuum", {"structure_id": sid, "vacuum_gap_A": -1}),
                  ("inspect_structure", {"structure_id": "str-20990101T000000Z-000000000000"}),
-                 ("create_structure", {"prototype": "MoSNH"})]
+                 ("create_structure", {"prototype": "unverified-prototype"})]
         for name, args in cases:
             with self.subTest(name=name, args=args):
                 self.assertIn("error", self.call(name, **args))

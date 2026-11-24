@@ -2,7 +2,7 @@
 
 ## 本地环境
 
-主 Agent 依赖 MatSimPy 的 `Agent`、`ChatProvider` 和 `ToolCatalog`。当前通过验收的 MatSimPy 版本为 0.11.0，对应源码提交 `d4bd33ba608b3dbf9253340b62a7ee45719c793e`。从项目根目录执行 `python -m pip install -e ../matsimpy -e .` 可注册本地源码和命令行入口。
+主 Agent 依赖 MatSimPy 的 `Agent`、`ChatProvider` 和 `ToolCatalog`。当前通过验收的 MatSimPy 版本为 0.11.0，对应源码提交 `d4bd33ba608b3dbf9253340b62a7ee45719c793e`。从项目根目录执行 `python -m pip install -e ../matsimpy -e '.[dev]'` 可注册本地源码和命令行入口。
 
 现有 WSL 工作区可以直接使用已经配置的 Python 环境。在项目根目录执行下列命令，使用源码运行，无需先安装本项目。
 

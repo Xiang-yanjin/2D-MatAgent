@@ -81,7 +81,7 @@ wheel 携带固定 MoS₂ 示例的 YAML、参考结构和脚本；本地权重�
 
 **从源码开发。**
 
-需要 Python 3.10 或以上版本，从相邻源码目录安装 MatSimPy。执行通用工作流还需要配套的 UniMatSim 实现及相应任务依赖，目录布局如下：
+需要 Python 3.11 或以上版本，从相邻源码目录安装 MatSimPy。执行通用工作流还需要配套的 UniMatSim 实现及相应任务依赖，目录布局如下：
 
 ```text
 workspace/
@@ -93,7 +93,7 @@ workspace/
 在本项目目录使用准备好的 Python 环境安装：
 
 ```bash
-python -m pip install -e ../matsimpy -e .
+python -m pip install -e ../matsimpy -e '.[dev]'
 ```
 
 查询参考记录不需要加载势模型，可先运行：
@@ -125,10 +125,12 @@ matagent --demo --workspace examples/mos2 "上次 MoS₂ 优化收敛了吗？�
 
 ## 开发与验收
 
-在项目根目录运行离线回归：
+开发前请阅读[开发约定](AGENTS.md)、[架构与职责边界](docs/architecture.md)和[阶段路线图](docs/roadmap.md)。安装开发依赖后，在项目根目录运行默认离线回归。基础对话测试可单独运行，使用 CPU 和离线模型。
 
 ```bash
-python -B -m unittest discover -s tests -v
+python -m pytest -q
+# 仅运行基础对话、配置和会话测试
+python -m pytest -q tests/test_agent.py tests/test_config.py tests/test_conversation.py
 ```
 
 如需从正式终端复跑完整自然语言验收，使用下面的显式开关。此用例会调用已配置的真实语言模型，在新工作区授权一次真实 CPU 工作流，并复用本机第 8 步已有的有效加载证据。
