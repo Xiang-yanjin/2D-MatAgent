@@ -1,0 +1,34 @@
+# Local calculation output and agent conversations
+/runs/
+.matsimpy/
+.matagent/
+examples/mos2/runs/*
+!examples/mos2/runs/20261120T143706Z-09f1c9a4/
+
+# Python environments, caches, and build output
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+/build/
+/dist/
+.coverage
+htmlcov/
+
+# Local credentials and editor settings
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local model weights
+*.pth
+*.pt
+*.ckpt
+*.safetensors

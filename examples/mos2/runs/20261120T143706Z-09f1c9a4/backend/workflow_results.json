@@ -1,0 +1,317 @@
+[
+  {
+    "structure": "/home/administrator/agent/2D-MatAgent/runs/20261120T143706Z-09f1c9a4/initial.vasp",
+    "result": {
+      "status": "completed",
+      "total_tasks": 1,
+      "results": {
+        "optimization": {
+          "task_type": "optimization",
+          "initial_structure": {
+            "@module": "pymatgen.core.structure",
+            "@class": "Structure",
+            "charge": 0.0,
+            "lattice": {
+              "matrix": [
+                [
+                  3.16,
+                  0.0,
+                  0.0
+                ],
+                [
+                  -1.58,
+                  2.736640275958826,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.0,
+                  20.0
+                ]
+              ],
+              "pbc": [
+                true,
+                true,
+                true
+              ],
+              "a": 3.16,
+              "b": 3.16,
+              "c": 20.0,
+              "alpha": 90.0,
+              "beta": 90.0,
+              "gamma": 120.00000000000001,
+              "volume": 172.9556654405978
+            },
+            "properties": {
+              "material_name": "initial",
+              "stacking_mode": "unknown",
+              "order": "unknown",
+              "source_file": "initial.vasp",
+              "file_path": "/home/administrator/agent/2D-MatAgent/runs/20261120T143706Z-09f1c9a4/initial.vasp",
+              "material_label": "initial"
+            },
+            "sites": [
+              {
+                "species": [
+                  {
+                    "element": "Mo",
+                    "occu": 1
+                  }
+                ],
+                "abc": [
+                  0.3333333333333333,
+                  0.6666666666666666,
+                  0.5
+                ],
+                "properties": {},
+                "label": "Mo",
+                "xyz": [
+                  0.0,
+                  1.8244268506392172,
+                  10.0
+                ]
+              },
+              {
+                "species": [
+                  {
+                    "element": "S",
+                    "occu": 1
+                  }
+                ],
+                "abc": [
+                  0.6666666666666666,
+                  0.3333333333333333,
+                  0.578
+                ],
+                "properties": {},
+                "label": "S",
+                "xyz": [
+                  1.5799999999999998,
+                  0.9122134253196086,
+                  11.559999999999999
+                ]
+              },
+              {
+                "species": [
+                  {
+                    "element": "S",
+                    "occu": 1
+                  }
+                ],
+                "abc": [
+                  0.6666666666666666,
+                  0.3333333333333333,
+                  0.422
+                ],
+                "properties": {},
+                "label": "S",
+                "xyz": [
+                  1.5799999999999998,
+                  0.9122134253196086,
+                  8.44
+                ]
+              }
+            ]
+          },
+          "optimized_structure": {
+            "@module": "pymatgen.core.structure",
+            "@class": "Structure",
+            "charge": 0.0,
+            "lattice": {
+              "matrix": [
+                [
+                  3.16,
+                  0.0,
+                  0.0
+                ],
+                [
+                  -1.58,
+                  2.736640275958826,
+                  0.0
+                ],
+                [
+                  0.0,
+                  0.0,
+                  20.0
+                ]
+              ],
+              "pbc": [
+                true,
+                true,
+                true
+              ],
+              "a": 3.16,
+              "b": 3.16,
+              "c": 20.0,
+              "alpha": 90.0,
+              "beta": 90.0,
+              "gamma": 120.00000000000001,
+              "volume": 172.9556654405978
+            },
+            "properties": {
+              "material_name": "initial",
+              "stacking_mode": "unknown",
+              "order": "unknown",
+              "source_file": "initial.vasp",
+              "file_path": "/home/administrator/agent/2D-MatAgent/runs/20261120T143706Z-09f1c9a4/initial.vasp",
+              "material_label": "initial"
+            },
+            "sites": [
+              {
+                "species": [
+                  {
+                    "element": "Mo",
+                    "occu": 1
+                  }
+                ],
+                "abc": [
+                  0.3333333362814425,
+                  0.66666664799401,
+                  0.49999999998454553
+                ],
+                "properties": {},
+                "label": "Mo",
+                "xyz": [
+                  3.881882237877221e-08,
+                  1.824426799538873,
+                  9.99999999969091
+                ]
+              },
+              {
+                "species": [
+                  {
+                    "element": "S",
+                    "occu": 1
+                  }
+                ],
+                "abc": [
+                  0.6666666662840348,
+                  0.333333344293301,
+                  0.5787958436802848
+                ],
+                "properties": {},
+                "label": "S",
+                "xyz": [
+                  1.5799999814741343,
+                  0.9122134553130977,
+                  11.575916873605696
+                ]
+              },
+              {
+                "species": [
+                  {
+                    "element": "S",
+                    "occu": 1
+                  }
+                ],
+                "abc": [
+                  0.6666666633718884,
+                  0.33333334119248803,
+                  0.4212041564239668
+                ],
+                "properties": {},
+                "label": "S",
+                "xyz": [
+                  1.579999977171036,
+                  0.9122134468272879,
+                  8.424083128479335
+                ]
+              }
+            ]
+          },
+          "optimization_info": {
+            "converged": true,
+            "final_energy": -15.636652946472168,
+            "final_volume_a3": 172.9556654405977,
+            "final_cell_angstrom": [
+              [
+                3.16,
+                0.0,
+                0.0
+              ],
+              [
+                -1.58,
+                2.736640275958826,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                20.0
+              ]
+            ],
+            "target_pressure_gpa": null,
+            "target_pressure_ev_per_a3": 0.0,
+            "pv_energy": 0.0,
+            "final_enthalpy": -15.636652946472168,
+            "objective_final": -15.636652946472168,
+            "final_stress_gpa": [
+              [
+                -0.8821356296539307,
+                2.6339259875385324e-06,
+                -1.2784715863745078e-07
+              ],
+              [
+                2.6339259875385324e-06,
+                -0.882135808467865,
+                -2.407272461368848e-07
+              ],
+              [
+                -1.2784715863745078e-07,
+                -2.407272461368848e-07,
+                -0.014037766493856907
+              ]
+            ],
+            "final_internal_pressure_gpa": 0.5927697420120239,
+            "n_steps": 2,
+            "fmax": 0.02,
+            "atomic_fmax": 0.004807979334145784,
+            "generalized_fmax": 0.004807979334145784,
+            "optimizer": "BFGS",
+            "energy_history": [
+              -15.632061004638672,
+              -15.63409423828125,
+              -15.636652946472168
+            ],
+            "objective_history": [
+              -15.632061004638672,
+              -15.63409423828125,
+              -15.636652946472168
+            ],
+            "resource_diagnostics_file": "backend/optimization/optimization_resource_diagnostics_initial.jsonl",
+            "resource_diagnostics_snapshot": "backend/optimization/optimization_last_valid_structure_initial.vasp",
+            "distance_monitor": null,
+            "optimization_monitor": null
+          },
+          "is_2d_material": true,
+          "relax_cell": false,
+          "cell_filter_info": null,
+          "atom_constraints": {
+            "detected": false,
+            "applied": false
+          },
+          "resource_diagnostics_file": "backend/optimization/optimization_resource_diagnostics_initial.jsonl",
+          "resource_diagnostics_snapshot": "backend/optimization/optimization_last_valid_structure_initial.vasp",
+          "timestamp": "2026-11-20T22:37:18.477978",
+          "material_name": "initial",
+          "stacking_mode": "unknown",
+          "order": "unknown",
+          "material_label": "initial",
+          "source_file": "initial.vasp",
+          "file_path": "/home/administrator/agent/2D-MatAgent/runs/20261120T143706Z-09f1c9a4/initial.vasp",
+          "output_file": "backend/optimization/optimization_initial.json",
+          "structure_files": {
+            "vasp": "backend/optimization/optimization_initial.vasp"
+          },
+          "structure_file": "backend/optimization/optimization_initial.vasp",
+          "task_name": "optimization",
+          "ml_potential": "mattersim"
+        }
+      },
+      "execution_order": [
+        "optimization"
+      ],
+      "workflow_id": "20261120T143706Z-09f1c9a4_1"
+    }
+  }
+]

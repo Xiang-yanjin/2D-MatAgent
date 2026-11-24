@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "2d-matagent"
+version = "1.4.0"
+description = "A Chinese-language agent for 2D structures, local potentials, validated workflow YAML, and simulation evidence"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["matsimpy[ai]>=0.11.0"]
+
+[project.scripts]
+matagent = "matagent.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

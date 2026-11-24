@@ -1,0 +1,52 @@
+
+════════════════════════════════════════════════════════════
+  Workflow Execution
+════════════════════════════════════════════════════════════
+
+Config Format: .YAML
+Input: initial.vasp
+
+Execution Mode: Local
+
+Processing: 1 structures
+
+ℹ️  Parsing task configuration: workflow.yaml
+Detected format: YAML
+[32m2026-11-20 22:37:18.144[0m | [1mINFO    [0m | [36mmattersim.forcefield.potential[0m:[36mfrom_checkpoint[0m:[36m893[0m - [1mLoading the model from /home/administrator/software/models/rand1-2d.pth[0m
+ML Potential: mattersim
+Parameters: {'device': 'cpu', 'model_path': 
+'/home/administrator/software/models/rand1-2d.pth'}
+Workflow ID: 20261120T143706Z-09f1c9a4
+Output directory: backend
+Privilege: material
+
+Total tasks: 1
+Execution stages: 1
+ℹ️  Execution order:
+  Stage 1: optimization
+
+
+======================================================================
+Structure 1/1: initial
+======================================================================
+  ▶ Running task: optimization (structure_optimization)
+      Step     Time          Energy          fmax
+BFGS:    0 22:37:18      -15.632061        0.285881
+BFGS:    1 22:37:18      -15.634094        0.212529
+BFGS:    2 22:37:18      -15.636653        0.004808
+    Optimization converged
+      Steps: 2
+      Final energy: -15.636653 eV
+      Converged: Yes
+      JSON → backend/optimization/optimization_initial.json
+      Structure (VASP) → backend/optimization/optimization_initial.vasp
+
+======================================================================
+✓ Structure 1/1 completed: initial
+Tasks completed:
+  • optimization (optimization)
+======================================================================
+
+
+ℹ️  Results saved to: backend/workflow_results.json
+✅ Workflow completed in 9.0s

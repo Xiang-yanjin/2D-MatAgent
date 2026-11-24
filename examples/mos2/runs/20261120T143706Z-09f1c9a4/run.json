@@ -1,0 +1,131 @@
+{
+  "status": "converged",
+  "started_utc": "2026-11-20T14:37:06.665015+00:00",
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "interpreter": "/home/administrator/software/UniMatSim/.venv/bin/python",
+  "source_commits": {
+    "matsimpy": "d4bd33ba608b3dbf9253340b62a7ee45719c793e",
+    "UniMatSim": "6ef1cb6a5c3b3a2f29f27bee50f889e2eacb5c11"
+  },
+  "reference": "tests/symmetry/test_kpath_2d.py::test_buckled_mos2_monolayer_is_hexagonal",
+  "configuration": "workflow.yaml",
+  "log": "workflow.log",
+  "raw_result": "backend/workflow_results.json",
+  "initial_structure": "initial.vasp",
+  "final_structure": "backend/optimization/optimization_initial.vasp",
+  "actual_backend": {
+    "angle_count": null,
+    "calculator_type": "mattersim.forcefield.potential.MatterSimCalculator",
+    "edge_count": null,
+    "graph_diagnostics": "not exposed by the active calculator",
+    "model": "mattersim",
+    "model_parameters": {
+      "device": "cpu",
+      "model_path": "/home/administrator/software/models/rand1-2d.pth"
+    }
+  },
+  "checkpoint": {
+    "path": "/home/administrator/software/models/rand1-2d.pth",
+    "sha256": "de8d3f7a5c6aa89178350a58d98e15699e65e0192d366e943aa6544ba1b5beda"
+  },
+  "energy_eV": -15.636652946472168,
+  "atomic_fmax_eV_per_A": 0.004807979334145784,
+  "generalized_fmax_eV_per_A": 0.004807979334145784,
+  "converged": true,
+  "steps": 2,
+  "versions": {
+    "mattersim": "1.2.2",
+    "torch": "2.11.0",
+    "ase": "3.28.0",
+    "pymatgen": "2026.3.23",
+    "numpy": "2.4.4",
+    "PyYAML": "6.0.3",
+    "matsimpy": "0.11.0",
+    "unimatsim": "2.1.0"
+  },
+  "requested_model": "mattersim",
+  "normal_axis": "c",
+  "parameters": {
+    "is_2d": true,
+    "relax_cell": false,
+    "optimizer": "BFGS",
+    "fmax": 0.02,
+    "steps": 200,
+    "save_json": true,
+    "save_structure": "vasp",
+    "save_summary": false,
+    "resource_diagnostics": true
+  },
+  "io_checks": {
+    "matsimpy": {
+      "sites": 3,
+      "species": [
+        "Mo",
+        "S",
+        "S"
+      ],
+      "max_cell_component_error_A": 0.0,
+      "max_site_error_A": 0.0
+    },
+    "unimatsim": {
+      "sites": 3,
+      "species": [
+        "Mo",
+        "S",
+        "S"
+      ],
+      "max_cell_component_error_A": 0.0,
+      "max_site_error_A": 3.508304757815495e-16
+    },
+    "workflow_input": {
+      "sites": 3,
+      "species": [
+        "Mo",
+        "S",
+        "S"
+      ],
+      "max_cell_component_error_A": 0.0,
+      "max_site_error_A": 3.508304757815495e-16
+    },
+    "workflow_output": {
+      "sites": 3,
+      "species": [
+        "Mo",
+        "S",
+        "S"
+      ],
+      "max_cell_component_error_A": 0.0,
+      "max_site_error_A": 1.1643355131339674e-15
+    }
+  },
+  "periodicity": {
+    "reference_pbc": [
+      true,
+      true,
+      false
+    ],
+    "poscar_as_ase_pbc": [
+      true,
+      true,
+      true
+    ]
+  },
+  "command": [
+    "/home/administrator/software/UniMatSim/.venv/bin/python",
+    "-m",
+    "unimatsim",
+    "workflow",
+    "run",
+    "-C",
+    "workflow.yaml",
+    "-i",
+    "initial.vasp",
+    "-O",
+    "backend",
+    "--id",
+    "20261120T143706Z-09f1c9a4"
+  ],
+  "workflow_exit_code": 0,
+  "diagnostics": "backend/optimization/optimization_resource_diagnostics_initial.jsonl",
+  "finished_utc": "2026-11-20T14:37:20.389921+00:00"
+}

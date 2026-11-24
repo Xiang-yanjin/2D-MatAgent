@@ -1,0 +1,26 @@
+metadata:
+  name: mos2_fixed_cell
+  ml_potential: mattersim
+  ml_params:
+    device: cpu
+    model_path: /home/administrator/software/models/rand1-2d.pth
+  # Sample metadata checked by run.py before launching UniMatSim.
+  slab_normal_axis: c
+  checkpoint_sha256: de8d3f7a5c6aa89178350a58d98e15699e65e0192d366e943aa6544ba1b5beda
+
+tasks:
+  - name: optimization
+    type: optimization
+    config:
+      is_2d: true
+      relax_cell: false
+      optimizer: BFGS
+      fmax: 0.02      # eV/Å
+      steps: 200
+      save_json: true
+      save_structure: vasp
+      save_summary: false
+      resource_diagnostics: true
+
+dependencies:
+  optimization: null
