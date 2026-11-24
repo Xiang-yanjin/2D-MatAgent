@@ -5,7 +5,7 @@ from .capabilities import catalog, inspect_capability_data
 import re
 from .plan_tools import checked
 from .plan_compiler import require
-from .potential_store import PotentialStore
+from .potentials.store import PotentialStore
 from .workflow_plans import WorkflowStore
 
 WORKFLOW_TOOLS=("list_capabilities","inspect_capability","preview_workflow","update_workflow")

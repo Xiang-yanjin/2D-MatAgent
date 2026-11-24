@@ -11,8 +11,8 @@ import unittest
 from unittest.mock import patch
 
 import yaml
-from matagent.agent import build_agent
-from matagent.demo_provider import DemoProvider
+from matagent.assistant.agent import build_agent
+from matagent.assistant.demo_provider import DemoProvider
 from matagent.physics_guard import DEFAULT_CONFIG, DEFAULT_STRUCTURE, inspect_inputs, mos2_reference
 
 PROJECT = Path(__file__).resolve().parents[1]

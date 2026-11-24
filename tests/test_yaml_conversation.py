@@ -10,10 +10,10 @@ import unittest
 from unittest.mock import patch
 
 from matsimpy.ai.provider import ChatMessage, ChatResponse, ToolCall
-from matagent.agent import build_agent
+from matagent.assistant.agent import build_agent
 from matagent.cli import main
 from matagent.plan_compiler import PlanStore
-from matagent.potential_store import PotentialStore
+from matagent.potentials.store import PotentialStore
 from test_yaml_plans import model_fixture, structure_fixture
 
 
@@ -136,7 +136,7 @@ class YamlConversationTests(unittest.TestCase):
         provider=WrongProvider()
         provider.selected=self.selected
         with build_agent(provider,self.workspace) as agent:
-            with patch("matagent.potential_validation.validate") as load:
+            with patch("matagent.potentials.validation.validate") as load:
                 result=agent.run("生成 YAML，只给我看计划")
                 self.assertIn("不自动加载",result.tool_calls[0].result["error"])
                 load.assert_not_called()

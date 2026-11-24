@@ -14,7 +14,7 @@ import yaml
 from monty.json import MontyEncoder
 from .execution import load, now
 from .execution_checks import check_result
-from .structure_store import write_json
+from .structures.store import write_json
 from .workflow_plans import fingerprint
 
 
@@ -574,7 +574,7 @@ class Execution:
         def invoke(_):
             requested = self.nodes[name].get("model") or {}
             if requested.get("source") == "local":
-                from .potential_store import check_location
+                from .potentials.store import check_location
 
                 problems = check_location(requested["location"])
                 if problems:

@@ -4,7 +4,7 @@ import tempfile
 from pathlib import Path
 import unittest
 from matsimpy.ai.provider import ChatMessage,ChatResponse,ToolCall
-from matagent.agent import build_agent
+from matagent.assistant.agent import build_agent
 from test_yaml_plans import structure_fixture,model_fixture
 
 class Provider:

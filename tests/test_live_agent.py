@@ -8,7 +8,7 @@ import subprocess
 import sys
 import unittest
 
-from matagent.config import configured_provider
+from matagent.assistant.config import configured_provider
 
 
 PROJECT = Path(__file__).resolve().parents[1]

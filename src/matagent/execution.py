@@ -17,7 +17,7 @@ from uuid import uuid4
 import yaml
 from .plan_compiler import PROJECT
 from .workflow_plans import WorkflowStore
-from .structure_store import write_json
+from .structures.store import write_json
 
 
 def now():
@@ -83,7 +83,7 @@ def worker_environment(folder=None):
 def preflight_issues(store, plan):
     from .execution_worker import blocked_reason
     from .capabilities import catalog
-    from .potential_store import PotentialStore
+    from .potentials.store import PotentialStore
 
     caps = catalog()
     issues = []

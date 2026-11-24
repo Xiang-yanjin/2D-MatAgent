@@ -10,13 +10,13 @@ import unittest
 from unittest.mock import patch
 
 import yaml
-from matagent.agent import build_agent
-from matagent.demo_provider import DemoProvider
+from matagent.assistant.agent import build_agent
+from matagent.assistant.demo_provider import DemoProvider
 from matagent.plan_compiler import PlanStore, PlanRequest, PlanError, compile_config, compile_yaml
 from matagent.plan_cli import main as plan_main
-from matagent.potential_store import PotentialStore
-from matagent.potential_validation import validate
-from matagent.structure_tools import StructureTools
+from matagent.potentials.store import PotentialStore
+from matagent.potentials.validation import validate
+from matagent.structures.tools import StructureTools
 from test_potentials import fake_worker
 
 
@@ -28,7 +28,7 @@ def model_fixture(workspace, backend="mattersim", seed=1):
     Path(str(path) + ".json").write_text(json.dumps({"backend": backend, "model_variant": "l12"}))
     store = PotentialStore(workspace)
     record = store.scan(weights)[0][0]
-    with patch("matagent.potential_validation.subprocess.run", side_effect=fake_worker):
+    with patch("matagent.potentials.validation.subprocess.run", side_effect=fake_worker):
         value = validate(store, record)
     selected = {k:value[k] for k in ("potential_id", "backend", "parameters", "runtime_environment",
                                     "cache_key", "validation_id")}
@@ -67,7 +67,7 @@ class YamlPlanTests(unittest.TestCase):
             with self.subTest(backend=backend):
                 selected = self.selected if backend == "mattersim" else model_fixture(self.workspace, backend)
                 definition = self.plans.new_definition(PlanRequest(self.sid, selected["potential_id"]), {})
-                with patch("matagent.potential_validation.validate", side_effect=AssertionError("no load")):
+                with patch("matagent.potentials.validation.validate", side_effect=AssertionError("no load")):
                     plan = self.plans.save(definition)
                 doc = yaml.safe_load(plan["yaml"])
                 wanted = {("model_file" if backend == "dp" else "model_path"): selected["source_path"], **extra}
@@ -140,7 +140,7 @@ class YamlPlanTests(unittest.TestCase):
         self.assertTrue(self.plans.validate(plan["plan_id"])["passed"])
 
     def test_expired_environment_and_known_element_mismatch(self):
-        with patch("matagent.potential_validation.environment_signature", return_value={}):
+        with patch("matagent.potentials.validation.environment_signature", return_value={}):
             with self.assertRaises(PlanError) as exc:
                 self.definition()
             self.assertEqual(exc.exception.status, "needs_validation")
@@ -154,7 +154,7 @@ class YamlPlanTests(unittest.TestCase):
         self.assertEqual(exc.exception.issue["field"], "structure.elements")
 
     def test_unknown_periodicity_requires_declaration(self):
-        from matagent.structure_store import StructureStore
+        from matagent.structures.store import StructureStore
         crystal, _ = StructureStore(self.workspace).load(self.sid)
         path = self.workspace / "POSCAR"
         from matsimpy.io import write

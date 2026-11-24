@@ -21,7 +21,7 @@ TOL = 1e-8
 
 def geometry_check(reference, candidate):
     """Shared comparison, wrapping only the reference's periodic axes."""
-    from .structure_geometry import compare_structures
+    from .structures.geometry import compare_structures
     return compare_structures(reference, candidate)
 
 
@@ -62,7 +62,7 @@ def _finite(value):
 def _structure(path, issues, reference=None):
     try:
         crystal = read(str(path))
-        from .structure_geometry import validate_crystal
+        from .structures.geometry import validate_crystal
         validate_crystal(crystal)
         cell = crystal.lattice.matrix
         if len(crystal) == 0 or not np.isfinite(cell).all() or not np.isfinite(crystal.frac_positions).all():
@@ -97,7 +97,7 @@ def optimization_parameter_issues(fmax, steps):
 
 def inspect_registered_structure(crystal, record):
     """Check registered 2D geometry without imposing the MoS2 sample identity."""
-    from .structure_geometry import layer_geometry
+    from .structures.geometry import layer_geometry
     periodicity = record["periodicity"]
     geometry, _ = layer_geometry(crystal, periodicity.get("normal_axis"))
     return {"passed": True, "geometry": geometry, "periodicity": periodicity,

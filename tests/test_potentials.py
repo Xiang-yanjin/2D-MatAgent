@@ -12,10 +12,10 @@ import unittest
 from unittest.mock import patch
 import zipfile
 
-from matagent.potential_catalog import BACKENDS, identify
-from matagent.potential_store import PotentialStore, PotentialError, check_location
-from matagent.potential_tools import PotentialTools
-from matagent.potential_validation import request_for, validate, validation_current
+from matagent.potentials.catalog import BACKENDS, identify
+from matagent.potentials.store import PotentialStore, PotentialError, check_location
+from matagent.potentials.tools import PotentialTools
+from matagent.potentials.validation import request_for, validate, validation_current
 
 
 def synthetic_weight(path, seed=1):
@@ -122,7 +122,7 @@ class PotentialTests(unittest.TestCase):
             def __reduce__(self):
                 return (eval, (f"__import__('pathlib').Path({str(marker)!r}).touch()",))
         (self.weights / "untrusted.pt").write_bytes(pickle.dumps(ExecutablePickle()))
-        with patch("matagent.potential_validation.subprocess.run") as loader:
+        with patch("matagent.potentials.validation.subprocess.run") as loader:
             records, warnings = self.store.scan(self.weights)
             loader.assert_not_called()
         self.assertFalse(marker.exists())
@@ -142,12 +142,12 @@ class PotentialTests(unittest.TestCase):
         synthetic_weight(self.weights / "b-2d.pth", seed=2)
         result = self.scan()
         pid = result["potential_ids"][0]
-        with patch("matagent.potential_validation.subprocess.run") as launch:
+        with patch("matagent.potentials.validation.subprocess.run") as launch:
             denied = self.tools.validate_potential(self.context, pid)
             self.assertTrue(denied["needs_clarification"])
             launch.assert_not_called()
         self.tools.begin_request("选择第二个，验证加载", self.conversation)
-        with patch("matagent.potential_validation.subprocess.run", side_effect=fake_worker) as launch:
+        with patch("matagent.potentials.validation.subprocess.run", side_effect=fake_worker) as launch:
             accepted = self.tools.validate_potential(self.context, result["potential_ids"][1])
         self.assertEqual(accepted["status"], "passed")
         self.assertEqual(launch.call_count, 1)
@@ -158,7 +158,7 @@ class PotentialTests(unittest.TestCase):
         self.tools.begin_request("选择 a-2d.pth", self.conversation)
         result = self.tools.select_potential(self.context, pid)
         self.assertEqual(result["status"], "needs_validation")
-        with patch("matagent.potential_validation.subprocess.run", side_effect=fake_worker) as launch:
+        with patch("matagent.potentials.validation.subprocess.run", side_effect=fake_worker) as launch:
             self.assertEqual(self.tools.validate_potential(self.context, pid)["status"], "passed")
             self.assertTrue(self.tools.validate_potential(self.context, pid)["reused"])
             self.assertEqual(launch.call_count, 1)
@@ -178,14 +178,14 @@ class PotentialTests(unittest.TestCase):
     def test_content_move_and_environment_change_invalidate_without_replacement(self):
         path = synthetic_weight(self.weights / "a-2d.pth")
         pid = self.scan()["potential_ids"][0]
-        with patch("matagent.potential_validation.subprocess.run", side_effect=fake_worker) as launch:
+        with patch("matagent.potentials.validation.subprocess.run", side_effect=fake_worker) as launch:
             first = validate(self.store, self.store.get(pid))
             second = validate(self.store, self.store.get(pid))
             self.assertTrue(second["reused"])
             self.assertEqual(launch.call_count, 1)
         self.tools.begin_request("以后默认用 a-2d.pth", self.conversation)
         self.tools.select_potential(self.context, pid, True)
-        with patch("matagent.potential_validation.environment_signature", return_value={"changed": True}):
+        with patch("matagent.potentials.validation.environment_signature", return_value={"changed": True}):
             self.assertFalse(self.tools.get_potential_selection(self.context)["valid"])
         path.rename(self.weights / "moved.pth")
         current = self.tools.get_potential_selection(self.context)
@@ -200,7 +200,7 @@ class PotentialTests(unittest.TestCase):
     def test_timeout_failure_dependency_and_inconsistent_worker_exit_are_recorded(self):
         synthetic_weight(self.weights / "a.pth")
         record = self.store.scan(self.weights)[0][0]
-        with patch("matagent.potential_validation.subprocess.run",
+        with patch("matagent.potentials.validation.subprocess.run",
                    side_effect=subprocess.TimeoutExpired("worker", 120)):
             result = validate(self.store, record)
         self.assertEqual(result["status"], "timeout")
@@ -210,14 +210,14 @@ class PotentialTests(unittest.TestCase):
             def failed(command, **kwargs):
                 Path(command[-1]).write_text(json.dumps({"status": status, "error": "synthetic failure"}))
                 return subprocess.CompletedProcess(command, code)
-            with patch("matagent.potential_validation.subprocess.run", side_effect=failed):
+            with patch("matagent.potentials.validation.subprocess.run", side_effect=failed):
                 result = validate(self.store, self.store.get(record["potential_id"]))
             self.assertEqual(result["status"], "failed" if status == "passed" else status)
             self.assertTrue(result["issues"])
 
     def test_unknown_id_and_unsupported_container_do_not_load(self):
         self.tools.begin_request("验证 pot-" + "a" * 24, self.conversation)
-        with patch("matagent.potential_validation.subprocess.run") as launch:
+        with patch("matagent.potentials.validation.subprocess.run") as launch:
             result = self.tools.validate_potential(self.context, "pot-" + "a" * 24)
             self.assertIn("未找到", result["error"])
             launch.assert_not_called()
@@ -234,7 +234,7 @@ class PotentialTests(unittest.TestCase):
     def test_prior_run_evidence_and_explicit_device_requests_are_checked(self):
         path = self.weights / "opaque-2d.pth"
         path.write_bytes(b"synthetic opaque checkpoint")
-        from matagent.potential_store import digest
+        from matagent.potentials.store import digest
         run = self.workspace / "runs/prior/run.json"
         run.parent.mkdir(parents=True)
         run.write_text(json.dumps({"status": "converged", "checkpoint": {"sha256": digest(path)},
@@ -245,11 +245,11 @@ class PotentialTests(unittest.TestCase):
         self.assertEqual(identity["backend"], "mattersim")
         self.assertTrue(any(e["kind"] == "recorded_backend" for e in identity["evidence"]))
         self.tools.begin_request("选择 opaque-2d.pth，在 GPU 上验证加载", self.conversation)
-        with patch("matagent.potential_validation.subprocess.run") as launch:
+        with patch("matagent.potentials.validation.subprocess.run") as launch:
             result = self.tools.validate_potential(self.context, pid)
             self.assertEqual(result["status"], "blocked_interface")
             launch.assert_not_called()
-        from matagent.potential_validation import environment_signature
+        from matagent.potentials.validation import environment_signature
         original = environment_signature()
         with patch.dict("os.environ", {"DP_BACKEND": "synthetic-other-backend"}):
             self.assertNotEqual(environment_signature(), original)
@@ -259,7 +259,7 @@ class PotentialTests(unittest.TestCase):
         synthetic_weight(self.weights / "a-2d.pth")
         pid = self.scan()["potential_ids"][0]
         self.tools.begin_request("选择 a-2d.pth 并验证加载", self.conversation)
-        with patch("matagent.potential_validation.subprocess.run", side_effect=fake_worker):
+        with patch("matagent.potentials.validation.subprocess.run", side_effect=fake_worker):
             self.assertEqual(self.tools.validate_potential(self.context, pid)["status"], "passed")
         self.tools.begin_request("选择 a-2d.pth，来源是 CHGNet，验证加载", self.conversation)
         result = self.tools.validate_potential(self.context, pid, backend="chgnet")
@@ -267,7 +267,7 @@ class PotentialTests(unittest.TestCase):
         self.assertFalse(validation_current(self.store.get(pid)))
         self.assertEqual(self.tools.select_potential(self.context, pid)["status"], "needs_validation")
         self.tools.begin_request("更正：来源是 MatterSim，选择 a-2d.pth 并验证加载", self.conversation)
-        with patch("matagent.potential_validation.subprocess.run", side_effect=fake_worker):
+        with patch("matagent.potentials.validation.subprocess.run", side_effect=fake_worker):
             result = self.tools.validate_potential(self.context, pid, backend="mattersim")
         self.assertEqual(result["status"], "passed")
         self.assertEqual(self.store.get(pid)["user_declaration"]["backend"], "mattersim")

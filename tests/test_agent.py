@@ -6,10 +6,10 @@ import shutil
 import tempfile
 import unittest
 
-from matagent.agent import build_agent
-from matagent.demo_provider import DemoProvider
-from matagent.structure_tools import TOOL_NAMES
-from matagent.potential_tools import TOOL_NAMES as POTENTIAL_TOOLS
+from matagent.assistant.agent import build_agent
+from matagent.assistant.demo_provider import DemoProvider
+from matagent.structures.tools import TOOL_NAMES
+from matagent.potentials.tools import TOOL_NAMES as POTENTIAL_TOOLS
 from matagent.plan_tools import PLAN_TOOLS
 from matagent.workflow_tools import WORKFLOW_TOOLS
 from matsimpy.ai.provider import ChatMessage, ChatResponse, ToolCall

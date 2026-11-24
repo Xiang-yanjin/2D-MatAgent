@@ -14,8 +14,8 @@ from unittest.mock import patch
 import yaml
 from matsimpy.ai.provider import ChatMessage, ChatResponse, ToolCall
 
-from matagent.agent import build_agent
-from matagent.demo_provider import DemoProvider
+from matagent.assistant.agent import build_agent
+from matagent.assistant.demo_provider import DemoProvider
 from matagent.optimization_tools import DEFAULT_CONFIG
 
 SAMPLE = Path(__file__).resolve().parents[1] / "examples/mos2/runs/20261120T143706Z-09f1c9a4"

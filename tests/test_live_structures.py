@@ -11,8 +11,8 @@ import sys
 import tempfile
 import unittest
 
-from matagent.structure_tools import TOOL_NAMES
-from matagent.structure_store import StructureStore
+from matagent.structures.tools import TOOL_NAMES
+from matagent.structures.store import StructureStore
 
 PROJECT = Path(__file__).resolve().parents[1]
 REFERENCE = PROJECT / "examples/mos2/runs/20261120T143706Z-09f1c9a4/initial.vasp"

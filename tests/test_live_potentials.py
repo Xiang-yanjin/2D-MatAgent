@@ -11,8 +11,8 @@ import unittest
 from uuid import uuid4
 
 from test_live_structures import turns
-from matagent.potential_store import PotentialStore
-from matagent.potential_tools import TOOL_NAMES
+from matagent.potentials.store import PotentialStore
+from matagent.potentials.tools import TOOL_NAMES
 
 PROJECT = Path(__file__).resolve().parents[1]
 WEIGHTS = Path("/home/administrator/software/models")

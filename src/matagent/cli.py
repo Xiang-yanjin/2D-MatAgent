@@ -5,8 +5,8 @@ import json
 import sys
 from pathlib import Path
 
-from .agent import build_agent
-from .config import configured_provider
+from .assistant.agent import build_agent
+from .assistant.config import configured_provider
 
 
 def _session_path(agent):
@@ -55,7 +55,7 @@ def main() -> int:
         parser.error("--list-sessions 不接受问题。")
 
     if args.demo or args.list_sessions:
-        from .demo_provider import DemoProvider
+        from .assistant.demo_provider import DemoProvider
         provider = DemoProvider()
         label = "离线查询测试模型"
     else:

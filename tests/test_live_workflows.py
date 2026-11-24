@@ -11,8 +11,8 @@ from uuid import uuid4
 import yaml
 from test_live_potentials import protected_snapshot
 from test_live_structures import turns
-from matagent.potential_store import PotentialStore
-from matagent.potential_validation import validation_current
+from matagent.potentials.store import PotentialStore
+from matagent.potentials.validation import validation_current
 from matagent.workflow_plans import WorkflowStore
 PROJECT=Path(__file__).resolve().parents[1]
 

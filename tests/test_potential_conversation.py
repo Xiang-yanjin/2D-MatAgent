@@ -12,9 +12,9 @@ import unittest
 from unittest.mock import patch
 
 from matsimpy.ai.provider import ChatMessage, ChatResponse, ToolCall
-from matagent.agent import build_agent
+from matagent.assistant.agent import build_agent
 from matagent.cli import main
-from matagent.potential_store import PotentialStore
+from matagent.potentials.store import PotentialStore
 from test_potentials import synthetic_weight, fake_worker
 from test_structure_conversation import StructureProvider
 from test_physics_guard import SAMPLE
@@ -66,7 +66,7 @@ class PotentialConversationTests(unittest.TestCase):
         return code, output.getvalue()
 
     def test_cli_scans_selects_remembers_and_restores_without_reloading(self):
-        with patch("matagent.potential_validation.subprocess.run", side_effect=fake_worker) as worker:
+        with patch("matagent.potentials.validation.subprocess.run", side_effect=fake_worker) as worker:
             code, output = self.cli(["--new"], [
                 f"扫描 {self.weights} ，用里面的二维模型",
                 "选择第二个，验证加载，以后默认用它",
@@ -91,7 +91,7 @@ class PotentialConversationTests(unittest.TestCase):
     def test_model_focus_keeps_structure_and_historical_run_references(self):
         shutil.copytree(SAMPLE, self.workspace / "runs" / SAMPLE.name)
         with build_agent(PotentialProvider(), self.workspace) as agent, \
-             patch("matagent.potential_validation.subprocess.run", side_effect=fake_worker):
+             patch("matagent.potentials.validation.subprocess.run", side_effect=fake_worker):
             created = agent.run("建立 MoS₂ 单层").tool_calls[0].result
             agent.run("查看运行编号 " + SAMPLE.name)
             agent.run(f"扫描 {self.weights} ，用二维模型")
@@ -115,12 +115,12 @@ class PotentialConversationTests(unittest.TestCase):
                     return ChatResponse(ChatMessage.assistant("", calls), calls, "tool_calls")
 
             agent.provider = Guesser()
-            with patch("matagent.potential_validation.subprocess.run") as worker:
+            with patch("matagent.potentials.validation.subprocess.run") as worker:
                 result = agent.run("用我文件夹里的二维模型")
                 self.assertTrue(result.tool_calls[0].result["needs_clarification"])
                 worker.assert_not_called()
             agent.provider = PotentialProvider()
-            with patch("matagent.potential_validation.subprocess.run", side_effect=fake_worker):
+            with patch("matagent.potentials.validation.subprocess.run", side_effect=fake_worker):
                 agent.run("选择第二个，验证加载，以后默认用它")
 
             class WrongExecution:
@@ -138,7 +138,7 @@ class PotentialConversationTests(unittest.TestCase):
     def test_queries_cannot_select_or_validate_and_old_sessions_restore(self):
         with build_agent(PotentialProvider(), self.workspace) as agent:
             scan = agent.run(f"扫描 {self.weights} ，用二维模型").tool_calls[0].result
-            with patch("matagent.potential_validation.subprocess.run", side_effect=fake_worker):
+            with patch("matagent.potentials.validation.subprocess.run", side_effect=fake_worker):
                 agent.run("选择第二个，验证加载")
             sid = agent.session.id
             session_path = agent.conversation.path
@@ -154,14 +154,14 @@ class PotentialConversationTests(unittest.TestCase):
             record = PotentialStore(self.workspace).get(scan["potential_ids"][1])
             agent.conversation.references["potential_ids"] = [record["potential_id"]]
             context = type("Context", (), {"workspace": self.workspace})()
-            with patch("matagent.potential_validation.subprocess.run") as worker:
+            with patch("matagent.potentials.validation.subprocess.run") as worker:
                 self.assertTrue(agent.potential_tools.validate_potential(context, record["potential_id"])["needs_clarification"])
                 self.assertTrue(agent.potential_tools.select_potential(context, record["potential_id"])["needs_clarification"])
                 worker.assert_not_called()
 
     def test_native_session_restores_model_selection_without_sidecar(self):
         with build_agent(PotentialProvider(), self.workspace) as agent, \
-             patch("matagent.potential_validation.subprocess.run", side_effect=fake_worker):
+             patch("matagent.potentials.validation.subprocess.run", side_effect=fake_worker):
             agent.run(f"扫描 {self.weights} ，用二维模型")
             selected = agent.run("选择第二个，验证加载").tool_calls[-1].result
             sid = agent.session.id
@@ -174,7 +174,7 @@ class PotentialConversationTests(unittest.TestCase):
 
     def test_model_query_forces_fresh_read_and_blocks_loading(self):
         with build_agent(PotentialProvider(), self.workspace) as agent, \
-             patch("matagent.potential_validation.subprocess.run", side_effect=fake_worker) as worker:
+             patch("matagent.potentials.validation.subprocess.run", side_effect=fake_worker) as worker:
             agent.run(f"扫描 {self.weights} ，用二维模型")
             chosen = agent.run("选择第二个，验证加载").tool_calls[-1].result["selection"]
             # A real-world stale history case: the selected file disappears.

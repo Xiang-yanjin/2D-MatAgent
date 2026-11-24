@@ -161,7 +161,7 @@ class WorkflowTests(unittest.TestCase):
         self.assertFalse(plan["nodes"][2]["inputs"]) # order does not fabricate data reuse
 
     def test_structure_and_independent_transport_capabilities_compile(self):
-        from matagent.structure_store import StructureStore
+        from matagent.structures.store import StructureStore
         crystal,_=StructureStore(self.root).load(self.sid)
         nodes=[
             {"id":"create","capability":"structure.create_structure","parameters":{

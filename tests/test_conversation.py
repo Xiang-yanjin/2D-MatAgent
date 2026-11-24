@@ -14,7 +14,7 @@ from unittest.mock import patch
 import yaml
 from matsimpy.ai.provider import ChatMessage, ChatResponse, ToolCall
 
-from matagent.agent import build_agent
+from matagent.assistant.agent import build_agent
 from matagent.cli import main
 from test_physics_guard import create_input_fixture, create_run_fixture, SAMPLE
 

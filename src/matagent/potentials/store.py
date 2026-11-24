@@ -7,8 +7,8 @@ import os
 from pathlib import Path
 import re
 
-from .potential_catalog import identify, normalize_backend, WEIGHT_SUFFIXES, SKIP_DIRECTORIES
-from .structure_store import write_json
+from .catalog import identify, normalize_backend, WEIGHT_SUFFIXES, SKIP_DIRECTORIES
+from ..structures.store import write_json
 
 POTENTIAL_ID = r"pot-[a-f0-9]{24}"
 
@@ -115,7 +115,7 @@ class PotentialStore:
         data, found, warnings = self.read(), [], []
         prior_evidence = {}
         references = {self.workspace / "runs",
-                      Path(__file__).resolve().parents[2] / "examples/mos2/runs"}
+                      Path(__file__).resolve().parents[3] / "examples/mos2/runs"}
         for runs in references:
             for path in sorted(runs.glob("*/run.json")):
                 try:

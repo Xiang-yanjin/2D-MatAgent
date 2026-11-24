@@ -17,12 +17,12 @@ from matsimpy.io import read, write
 from matsimpy.transformation.structural import make_supercell
 from matsimpy.utils.tooling import tool
 
-from .physics_guard import sha256
-from .structure_geometry import (
+from ..physics_guard import sha256
+from .geometry import (
     StructureIssue, require, positive, validate_crystal, rebuild,
     layer_geometry, change_vacuum, compare_structures,
 )
-from .structure_store import StructureStore, write_json
+from .store import StructureStore, write_json
 
 SOURCE_COMMIT = "d4bd33ba608b3dbf9253340b62a7ee45719c793e"
 PROTOTYPES = {

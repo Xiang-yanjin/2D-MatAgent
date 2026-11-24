@@ -7,8 +7,8 @@ from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 
-from matagent import potential_worker
-from matagent.potential_store import location
+from matagent.potentials import worker as potential_worker
+from matagent.potentials.store import location
 
 
 class WorkerTests(unittest.TestCase):

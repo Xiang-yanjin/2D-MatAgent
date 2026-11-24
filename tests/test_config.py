@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from matagent.config import configured_provider
+from matagent.assistant.config import configured_provider
 
 
 class ModelConfigTests(unittest.TestCase):

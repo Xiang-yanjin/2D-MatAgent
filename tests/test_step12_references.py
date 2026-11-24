@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 from types import SimpleNamespace
 
-from matagent.conversation import Conversation
+from matagent.assistant.conversation import Conversation
 from matagent.optimization_tools import OptimizationTools
 
 

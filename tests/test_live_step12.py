@@ -14,8 +14,8 @@ from uuid import uuid4
 
 import yaml
 
-from matagent.potential_store import PotentialStore
-from matagent.potential_validation import validation_current
+from matagent.potentials.store import PotentialStore
+from matagent.potentials.validation import validation_current
 from test_live_structures import turns
 
 PROJECT = Path(__file__).resolve().parents[1]

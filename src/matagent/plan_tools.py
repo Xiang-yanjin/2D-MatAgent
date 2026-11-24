@@ -8,7 +8,7 @@ from matsimpy.ai.tools import ToolContext
 from matsimpy.utils.tooling import tool
 
 from .plan_compiler import PlanStore, PlanRequest, DEFAULTS, error_result, require, PlanError
-from .potential_store import PotentialStore
+from .potentials.store import PotentialStore
 from .physics_guard import optimization_parameter_issues
 
 PLAN_TOOLS = ("update_optimization_plan", "inspect_plan", "validate_plan")

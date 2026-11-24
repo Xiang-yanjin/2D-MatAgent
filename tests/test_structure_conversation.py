@@ -12,7 +12,7 @@ import unittest
 from unittest.mock import patch
 
 from matsimpy.ai.provider import ChatMessage, ChatResponse, ToolCall
-from matagent.agent import build_agent
+from matagent.assistant.agent import build_agent
 from matagent.cli import main
 from test_physics_guard import SAMPLE
 

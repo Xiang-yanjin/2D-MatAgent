@@ -8,16 +8,16 @@ import subprocess
 import sys
 from uuid import uuid4
 
-from .potential_catalog import BACKENDS, normalize_backend, versions
-from .potential_store import check_location, digest, now, require
-from .structure_store import write_json
+from .catalog import BACKENDS, normalize_backend, versions
+from .store import check_location, digest, now, require
+from ..structures.store import write_json
 
 
 def environment_signature():
-    source = Path(__file__).resolve().parents[3] / "UniMatSim/unimatsim/engine/calculations.py"
+    source = Path(__file__).resolve().parents[4] / "UniMatSim/unimatsim/engine/calculations.py"
     return {"python": sys.executable, "python_version": sys.version.split()[0],
             "packages": versions(), "unimatsim_source_sha256": digest(source) if source.is_file() else None,
-            "validator_sha256": digest(Path(__file__).with_name("potential_worker.py")),
+            "validator_sha256": digest(Path(__file__).with_name("worker.py")),
             "loader_environment": {key: os.environ.get(key) for key in
                                    ("DP_BACKEND", "TORCH_FORCE_WEIGHTS_ONLY_LOAD",
                                     "TORCH_FORCE_NO_WEIGHTS_ONLY_LOAD")}}
@@ -97,12 +97,12 @@ def validate(store, record, backend=None, variant=None, timeout=120):
     env = os.environ.copy()
     env.update(request["runtime_environment"], PYTHONDONTWRITEBYTECODE="1",
                HF_HUB_OFFLINE="1", TRANSFORMERS_OFFLINE="1")
-    source_dir = str(Path(__file__).resolve().parents[1])
+    source_dir = str(Path(__file__).resolve().parents[2])
     env["PYTHONPATH"] = source_dir + (os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else "")
     result = {}
     try:
         with log_path.open("w", encoding="utf-8") as output:
-            proc = subprocess.run([sys.executable, "-B", "-m", "matagent.potential_worker",
+            proc = subprocess.run([sys.executable, "-B", "-m", "matagent.potentials.worker",
                                    str(request_path), str(result_path)], cwd=folder,
                                   env=env, stdout=output, stderr=subprocess.STDOUT, timeout=timeout)
         if result_path.is_file():

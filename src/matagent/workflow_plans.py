@@ -12,10 +12,10 @@ import yaml
 from matsimpy.io import write
 from .capabilities import catalog, ALIASES, ROOT, evidence
 from .plan_compiler import PlanStore, require, canonical_hash, PROJECT, PlanError, error_result
-from .structure_store import StructureStore, write_json
+from .structures.store import StructureStore, write_json
 from .physics_guard import sha256
-from .potential_store import PotentialStore
-from .potential_validation import request_for, validation_current
+from .potentials.store import PotentialStore
+from .potentials.validation import request_for, validation_current
 from .workflow_validation import parameters, json_finite
 
 NODE = r"[A-Za-z][A-Za-z0-9_]{0,63}"
@@ -516,7 +516,7 @@ class WorkflowStore(PlanStore):
             for sid,snapshot in plan["structure_snapshots"].items():
                 crystal,_=StructureStore(self.workspace).load(sid)
                 from matsimpy.io import read
-                from .structure_geometry import compare_structures
+                from .structures.geometry import compare_structures
                 compare_structures(crystal,read(str(self.directory(plan_id)/"inputs"/(sid+".vasp")),format="vasp"))
             for key,proof in plan["backend_sources"].items():
                 require(evidence(key)==proof,"backend_source",key,"后端源码变化，旧证据失效。","显式创建重新编译的新版本。")

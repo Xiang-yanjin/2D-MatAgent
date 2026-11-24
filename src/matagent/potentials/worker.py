@@ -6,7 +6,7 @@ from pathlib import Path
 import sys
 import traceback
 
-from .potential_store import check_location
+from .store import check_location
 
 
 def _deny_network(event, args):
@@ -21,7 +21,7 @@ def load(request):
     # Restrict network access before importing any backend. This is not an
     # OS security sandbox; validation invokes the user's selected backend.
     sys.addaudithook(_deny_network)
-    local_unimatsim = Path(__file__).resolve().parents[3] / "UniMatSim"
+    local_unimatsim = Path(__file__).resolve().parents[4] / "UniMatSim"
     if local_unimatsim.is_dir():
         sys.path.insert(0, str(local_unimatsim))
     from unimatsim.engine import CalculationInvocation

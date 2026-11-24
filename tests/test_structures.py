@@ -10,10 +10,10 @@ import numpy as np
 from matsimpy import Crystal, Lattice
 from matsimpy.io import read, write
 
-from matagent.agent import build_agent
-from matagent.demo_provider import DemoProvider
-from matagent.structure_geometry import rebuild, compare_structures
-from matagent.structure_store import StructureStore
+from matagent.assistant.agent import build_agent
+from matagent.assistant.demo_provider import DemoProvider
+from matagent.structures.geometry import rebuild, compare_structures
+from matagent.structures.store import StructureStore
 
 
 class StructureTests(unittest.TestCase):

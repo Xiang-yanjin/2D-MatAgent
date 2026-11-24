@@ -17,10 +17,10 @@ from matsimpy import Crystal, Lattice
 from matsimpy.io import read, write
 
 from .physics_guard import optimization_parameter_issues, inspect_registered_structure, sha256
-from .structure_geometry import compare_structures
-from .structure_store import StructureStore, write_json
-from .potential_store import PotentialStore
-from .potential_validation import validation_current, request_for
+from .structures.geometry import compare_structures
+from .structures.store import StructureStore, write_json
+from .potentials.store import PotentialStore
+from .potentials.validation import validation_current, request_for
 
 PLAN_ID = r"plan-\d{8}T\d{6}Z-[a-f0-9]{8}"
 DEFAULTS = {"fmax": 0.02, "steps": 200}

@@ -8,9 +8,9 @@ import re
 from matsimpy.ai.tools import ToolContext
 from matsimpy.utils.tooling import tool
 
-from .potential_catalog import capabilities, normalize_backend
-from .potential_store import PotentialError, PotentialStore, POTENTIAL_ID, check_location, now, require, short_record
-from .potential_validation import validate, validation_current
+from .catalog import capabilities, normalize_backend
+from .store import PotentialError, PotentialStore, POTENTIAL_ID, check_location, now, require, short_record
+from .validation import validate, validation_current
 
 TOOL_NAMES = ("scan_potentials", "inspect_potential", "validate_potential",
               "select_potential", "get_potential_selection")
